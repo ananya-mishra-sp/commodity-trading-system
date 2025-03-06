@@ -1,28 +1,21 @@
-.auth-container {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  mat-form-field {
-    display: block;
-    width: 100%;
-  }
-  
-  .full-width {
-    width: 100%;
-  }
-  
-  .error {
-    color: red;
-    font-size: 14px;
-  }
-  
-  .close-btn {
-    margin-top: 10px;
-  }
-  
+.register-container,
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  background: #fec4c4;
+  border-radius: 10px;
+  color: rgb(6, 6, 6);
+  text-align: center;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.register-button,
+.login-button {
+  width: 100%;
+  margin-top: 15px;
+}

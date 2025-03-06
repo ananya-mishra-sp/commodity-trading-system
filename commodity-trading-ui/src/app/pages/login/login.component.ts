@@ -6,19 +6,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  styleUrls: ['./login.component.css'],
   imports: [
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,
     MatDialogModule,
-    CommonModule
+    CommonModule,
+    MatSelectModule
   ],
 })
 export class LoginComponent {
@@ -32,8 +34,8 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['', Validators.required],
+      password: ['', Validators.required],
+      role: ['', Validators.required], // Role dropdown
     });
   }
 

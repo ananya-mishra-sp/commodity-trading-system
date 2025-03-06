@@ -1,20 +1,32 @@
-<mat-dialog-content class="auth-container">
-    <h2>Login</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-      <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email" type="email" required />
-      </mat-form-field>
-  
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input matInput formControlName="password" type="password" required />
-      </mat-form-field>
-  
-      <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-  
-      <button mat-raised-button color="primary" type="submit" class="full-width">Login</button>
-      <button mat-button class="close-btn" (click)="closeModal()">Cancel</button>
-    </form>
-  </mat-dialog-content>
-  
+<div class="login-container">
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" required />
+      <mat-error *ngIf="loginForm.get('email')?.invalid">Invalid email address</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="password" type="password" required />
+      <mat-error *ngIf="loginForm.get('password')?.invalid">Password is required</mat-error>
+    </mat-form-field>
+
+    <!-- Role Selection Dropdown -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role">
+        <mat-option value="user">User</mat-option>
+        <mat-option value="admin">Admin</mat-option>
+      </mat-select>
+      <mat-error *ngIf="loginForm.get('role')?.invalid">Role is required</mat-error>
+    </mat-form-field>
+
+    <mat-error *ngIf="errorMessage">{{ errorMessage }}</mat-error>
+
+    <button mat-raised-button color="primary" class="login-button" type="submit" [disabled]="loginForm.invalid">
+      Login
+    </button>
+  </form>
+</div>

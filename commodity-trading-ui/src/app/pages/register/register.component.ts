@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-register',
   standalone: true,
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
+  styleUrls: ['./register.component.css'],
   imports: [
     ReactiveFormsModule,
     MatInputModule,
@@ -24,6 +24,8 @@ import { CommonModule } from '@angular/common';
 export class RegisterComponent {
   registerForm: FormGroup;
   errorMessage: string = '';
+  usernameExists: boolean = false;
+  emailExists: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -31,15 +33,43 @@ export class RegisterComponent {
     private dialogRef: MatDialogRef<RegisterComponent>
   ) {
     this.registerForm = this.fb.group({
-      name: ['', Validators.required],
+      fullName: ['', Validators.required],
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
     });
+  }
+
+  checkUsernameExists() {
+    const username = this.registerForm.get('username')?.value;
+    if (username) {
+      this.authService.checkUsername(username).subscribe((exists) => {
+        this.usernameExists = exists;
+      });
+    }
+  }
+
+  checkEmailExists() {
+    const email = this.registerForm.get('email')?.value;
+    if (email) {
+      this.authService.checkEmail(email).subscribe((exists) => {
+        this.emailExists = exists;
+      });
+    }
   }
 
   register() {
     if (this.registerForm.valid) {
+      if (this.registerForm.value.password !== this.registerForm.value.confirmPassword) {
+        this.errorMessage = 'Passwords do not match';
+        return;
+      }
+
+      if (this.usernameExists || this.emailExists) {
+        return;
+      }
+
       this.authService.register(this.registerForm.value).subscribe({
         next: () => {
           this.dialogRef.close();
