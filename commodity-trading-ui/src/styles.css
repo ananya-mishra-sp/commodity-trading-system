@@ -1,1 +1,104 @@
-/* You can add global styles to this file, and also import other style files */
+/* 🎨 Define global theme colors */
+:root {
+    --primary-color: black;
+    --secondary-color: red;
+    --text-color: white;
+    --card-bg: #121212; /* Darker shade for contrast */
+  }
+  
+  /* 🌍 Global Styles */
+  body {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* 📌 Hero Section */
+  .hero {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--secondary-color);
+    color: var(--text-color);
+  }
+  
+  .hero h1 {
+    font-size: 40px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .hero p {
+    font-size: 18px;
+  }
+  
+  .action-buttons {
+    margin-top: 20px;
+  }
+  
+  .action-buttons button {
+    margin: 10px;
+    font-size: 16px;
+    padding: 10px 20px;
+    font-weight: bold;
+  }
+  
+  /* 📦 Commodity Section */
+  .section-title {
+    text-align: center;
+    margin: 40px 0 20px;
+    font-size: 28px;
+    color: var(--text-color);
+  }
+  
+  .commodity-grid {
+    padding: 0 10%;
+  }
+  
+  .commodity-card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    text-align: center;
+    border-radius: 12px;
+    padding: 15px;
+  }
+  
+  .commodity-card img {
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  /* 🔥 Features Section */
+  .features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+  }
+  
+  .feature-card {
+    width: 30%;
+    text-align: center;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 12px;
+  }
+  
+  /* 🛠 Fix Angular Material Default Colors */
+  .mat-mdc-button.mat-primary {
+    background-color: var(--primary-color) !important;
+    color: var(--text-color) !important;
+  }
+  
+  .mat-mdc-button.mat-accent {
+    background-color: var(--secondary-color) !important;
+    color: var(--text-color) !important;
+  }
+  
+  .mat-card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+  }
+  

@@ -1,0 +1,37 @@
+<div class="hero">
+  <h1>Welcome to Commodity Trading System</h1>
+  <p>Trade commodities efficiently with real-time market updates.</p>
+  <div class="action-buttons">
+    <button mat-raised-button color="warn" (click)="openRegisterDialog()">Get Started</button>
+    <button mat-raised-button color="primary" (click)="openLoginDialog()">Login</button>
+  </div>
+</div>
+
+<h2 class="section-title">Commodities You Could Trade On</h2>
+
+<mat-grid-list cols="3" rowHeight="350px" gutterSize="16px" class="commodity-grid">
+  <mat-grid-tile *ngFor="let commodity of commodities">
+    <mat-card class="commodity-card">
+      <img mat-card-image [src]="commodity.image" alt="{{ commodity.name }}">
+      <mat-card-title>{{ commodity.name }}</mat-card-title>
+      <mat-card-content>{{ commodity.description }}</mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+
+<h2 class="section-title">Trade Here!</h2>
+
+<div class="features">
+  <mat-card class="feature-card">
+    <mat-card-title>Real-time Market Data</mat-card-title>
+    <mat-card-content>Stay updated with live market prices.</mat-card-content>
+  </mat-card>
+  <mat-card class="feature-card">
+    <mat-card-title>Advanced Analytics</mat-card-title>
+    <mat-card-content>Get insights with portfolio and risk analysis.</mat-card-content>
+  </mat-card>
+  <mat-card class="feature-card">
+    <mat-card-title>Secure Transactions</mat-card-title>
+    <mat-card-content>Safe and transparent trading environment.</mat-card-content>
+  </mat-card>
+</div>

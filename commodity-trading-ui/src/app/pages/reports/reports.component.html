@@ -1,0 +1,10 @@
+<div class="reports-container">
+    <h2>Reports</h2>
+    <ul>
+      <li *ngFor="let report of reports">
+        {{ report.name }}
+        <button (click)="downloadReport(report.file)">Download</button>
+      </li>
+    </ul>
+  </div>
+  
