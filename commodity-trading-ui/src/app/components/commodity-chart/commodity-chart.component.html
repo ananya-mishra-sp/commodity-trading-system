@@ -1,0 +1,39 @@
+<table mat-table [dataSource]="commodities" class="mat-elevation-z8">
+  <!-- ✅ Column: ID
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> ID </th>
+    <td mat-cell *matCellDef="let commodity"> {{ commodity.id }} </td>
+  </ng-container> -->
+
+  <!-- ✅ Column: Name -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let commodity"> {{ commodity.name }} </td>
+  </ng-container>
+
+  <!-- ✅ Column: Unit -->
+  <ng-container matColumnDef="unit">
+    <th mat-header-cell *matHeaderCellDef> Unit </th>
+    <td mat-cell *matCellDef="let commodity"> {{ commodity.unit }} </td>
+  </ng-container>
+
+  <!-- ✅ Column: Current Price -->
+  <ng-container matColumnDef="currentPrice">
+    <th mat-header-cell *matHeaderCellDef> Current Price </th>
+    <td mat-cell *matCellDef="let commodity"> {{ commodity.currentPrice | currency }} </td>
+  </ng-container>
+
+  <!-- ✅ Column: Trade Button -->
+  <ng-container matColumnDef="trade">
+    <th mat-header-cell *matHeaderCellDef> Trade </th>
+    <td mat-cell *matCellDef="let commodity">
+      <button mat-raised-button color="warn" (click)="trade.emit(commodity)">Trade</button>
+    </td>
+  </ng-container>
+
+  <!-- ✅ Header Row -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+  <!-- ✅ Data Rows -->
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

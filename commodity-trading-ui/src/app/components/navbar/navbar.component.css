@@ -1,0 +1,19 @@
+.navbar {
+  display: flex;
+  gap: 20px;
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.nav-btn {
+  font-weight: bold;
+  color: #800000; /* Maroon */
+}
+
+.logout-btn {
+  margin-left: auto;
+  font-weight: bold;
+}

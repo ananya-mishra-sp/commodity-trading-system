@@ -1,10 +1,10 @@
 <nav class="navbar">
-  <h1 class="logo">
+  <div class="logo">
     <a routerLink="/">CommodityTrading</a>
-  </h1>
+  </div>
   <div class="nav-buttons" *ngIf="isHomePage()">
-    <button routerLink="/register" class="btn">Register</button>
-    <button routerLink="/login" class="btn">Login</button>
+    <button class="btn" (click)="openRegisterDialog()">Register</button>
+    <button class="btn" (click)="openLoginDialog()">Login</button>
   </div>
 </nav>
 

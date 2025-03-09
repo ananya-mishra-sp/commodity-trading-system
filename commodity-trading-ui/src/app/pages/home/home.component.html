@@ -3,7 +3,7 @@
   <p>Trade commodities efficiently with real-time market updates.</p>
   <div class="action-buttons">
     <button mat-raised-button color="warn" (click)="openRegisterDialog()">Get Started</button>
-    <button mat-raised-button color="primary" (click)="openLoginDialog()">Login</button>
+    <button mat-raised-button color="primary" (click)="openLoginDialog()">Dive In</button>
   </div>
 </div>
 
@@ -11,11 +11,22 @@
 
 <mat-grid-list cols="3" rowHeight="350px" gutterSize="16px" class="commodity-grid">
   <mat-grid-tile *ngFor="let commodity of commodities">
-    <mat-card class="commodity-card">
-      <img mat-card-image [src]="commodity.image" alt="{{ commodity.name }}">
-      <mat-card-title>{{ commodity.name }}</mat-card-title>
-      <mat-card-content>{{ commodity.description }}</mat-card-content>
-    </mat-card>
+    <div class="commodity-card" (click)="flipCard(commodity)">
+      <div class="card-inner" [class.flipped]="commodity.flipped">
+        <!-- Front Side (Image + Name Overlay) -->
+        <div class="card-front">
+          <img [src]="commodity.image" alt="{{ commodity.name }}">
+          <div class="overlay">
+            <h2>{{ commodity.name }}</h2>
+          </div>
+        </div>
+        <!-- Back Side (Name + Description) -->
+        <div class="card-back">
+          <mat-card-title>{{ commodity.name }}</mat-card-title>
+          <mat-card-content>{{ commodity.description }}</mat-card-content>
+        </div>
+      </div>
+    </div>
   </mat-grid-tile>
 </mat-grid-list>
 
@@ -35,3 +46,7 @@
     <mat-card-content>Safe and transparent trading environment.</mat-card-content>
   </mat-card>
 </div>
+
+<a mat-button color="primary" routerLink="/user-dashboard">Go to User Dashboard</a>
+<a mat-button color="accent" routerLink="/admin-dashboard">Go to Admin Dashboard</a>
+<!-- remove later -->

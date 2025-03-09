@@ -1,0 +1,18 @@
+.trade-popup {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    color: black;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  

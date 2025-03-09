@@ -1,39 +1,15 @@
 .dashboard-container {
-    width: 80%;
-    margin: 50px auto;
-    text-align: center;
-  }
-  
-  table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
-  
-  th {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  button {
-    padding: 8px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #218838;
-  }
-  
-  .logout-btn {
-    margin-top: 20px;
-    background-color: #dc3545;
-  }
-  
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+}
+
+.sorting-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.sort-dropdown {
+  width: 200px;
+}

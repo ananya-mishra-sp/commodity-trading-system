@@ -21,5 +21,9 @@ export class ApiService {
   getRiskAnalysis(userId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/risk-analysis/${userId}`);
   }
+
+  getCommodities(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/commodities`);
+  }
 }
 

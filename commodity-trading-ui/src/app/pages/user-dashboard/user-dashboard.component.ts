@@ -1,59 +1,58 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
 import { ApiService } from '../../services/api.service';
-import { Observable } from 'rxjs';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { CommodityChartComponent } from '../../components/commodity-chart/commodity-chart.component';
+import { TradePopupComponent } from '../../components/trade-popup/trade-popup.component';
 
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
   templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.scss'],
-  imports: [CommonModule],
+  styleUrls: ['./user-dashboard.component.css'],
+  imports: [CommonModule, NavbarComponent, CommodityChartComponent, MatButtonModule, MatSelectModule]
 })
 export class UserDashboardComponent implements OnInit {
-  userId: number = 1;
-  portfolio: any[] = []; // ✅ Added this
-  trades: any[] = []; // ✅ Added this
-  riskAnalysis: any[] = [];
+  commoditiesList: any[] = [];
+  selectedSort: string = 'name-asc'; // Sorting option
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.loadUserPortfolio();
-    this.loadTradeHistory();
-    this.loadRiskAnalysis();
+    this.loadCommodities();
   }
 
-  loadUserPortfolio() {
-    this.apiService.getPortfolio(this.userId).subscribe({
-      next: (data) => {
-        this.portfolio = data; // ✅ Assign the data properly
+  loadCommodities() {
+    this.apiService.getCommodities().subscribe({
+      next: (commodities) => {
+        this.commoditiesList = commodities;
+        this.sortCommodities(); // Apply default sorting
       },
       error: (err) => {
-        console.error('Error fetching portfolio:', err);
+        console.error('Error fetching commodities:', err);
       }
     });
   }
 
-  loadTradeHistory() {
-    this.apiService.getTradeHistory(this.userId).subscribe({
-      next: (data) => {
-        this.trades = data; // ✅ Assign the data properly
-      },
-      error: (err) => {
-        console.error('Error fetching trade history:', err);
-      }
+  openTradePopup(commodity: any) {
+    this.dialog.open(TradePopupComponent, {
+      width: '400px',
+      data: { commodity }
     });
   }
 
-  loadRiskAnalysis() {
-    this.apiService.getRiskAnalysis(this.userId).subscribe({
-      next: (data) => {
-        this.riskAnalysis = data;
-      },
-      error: (err) => {
-        console.error('Error fetching risk analysis:', err);
-      }
-    });
+  sortCommodities() {
+    if (this.selectedSort === 'name-asc') {
+      this.commoditiesList.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (this.selectedSort === 'name-desc') {
+      this.commoditiesList.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (this.selectedSort === 'price-low-high') {
+      this.commoditiesList.sort((a, b) => a.price - b.price);
+    } else if (this.selectedSort === 'price-high-low') {
+      this.commoditiesList.sort((a, b) => b.price - a.price);
+    }
   }
 }
