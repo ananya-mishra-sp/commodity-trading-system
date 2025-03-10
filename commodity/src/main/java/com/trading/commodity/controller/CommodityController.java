@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/commodities")
@@ -21,14 +20,16 @@ public class CommodityController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Commodity>> getAllCommodities() {
-        return ResponseEntity.ok(commodityService.getAllCommodities());
+    public ResponseEntity<List<Commodity>> getAllCommodities(
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String order) {
+        return ResponseEntity.ok(commodityService.getAllCommodities(sortBy, order));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Commodity> getCommodityById(@PathVariable Integer id) {
-        Optional<Commodity> commodity = commodityService.getCommodityById(id);
-        return commodity.map(ResponseEntity::ok)
+        return commodityService.getCommodityById(id)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

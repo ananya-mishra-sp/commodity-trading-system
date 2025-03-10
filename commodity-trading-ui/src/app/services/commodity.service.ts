@@ -6,11 +6,11 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CommodityService {
-  private apiUrl = 'http://localhost:8080/api/commodities'; // Adjust based on your backend API
+  private apiUrl = 'http://localhost:8080/api/commodities';
 
   constructor(private http: HttpClient) {}
 
-  getCommodities(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getCommodities(sortBy: string = 'name', order: string = 'asc'): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}?sortBy=${sortBy}&order=${order}`);
   }
 }

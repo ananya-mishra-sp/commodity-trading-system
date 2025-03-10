@@ -3,6 +3,7 @@ package com.trading.commodity.service;
 import com.trading.commodity.model.Commodity;
 import com.trading.commodity.repository.CommodityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +19,10 @@ public class CommodityService {
         this.commodityRepository = commodityRepository;
     }
 
-    public List<Commodity> getAllCommodities() {
-        return commodityRepository.findAll();
+    public List<Commodity> getAllCommodities(String sortBy, String order) {
+        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+        return commodityRepository.findAll(sort);
     }
 
     public Optional<Commodity> getCommodityById(Integer id) {

@@ -10,13 +10,13 @@ table {
     font-size: larger;
  }
   
-  th, td {
+th, td {
     padding: 10px;
     text-align: center;
     background-color: rgb(203, 171, 171);
     color: rgb(6, 6, 6);
     border-bottom: 1px solid #ddd;
-  }
+}
   
   th {
     color: rgb(204, 202, 202);
