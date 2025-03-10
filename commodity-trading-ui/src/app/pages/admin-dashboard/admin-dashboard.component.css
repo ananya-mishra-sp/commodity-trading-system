@@ -1,23 +1,52 @@
-.dashboard-container {
-    width: 80%;
-    margin: 50px auto;
-    text-align: center;
-  }
-  
-  button {
-    padding: 10px;
-    margin: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  .logout-btn {
-    background-color: #dc3545;
-  }
-  
+.admin-dashboard {
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.admin-navbar {
+  display: flex;
+  justify-content: space-between;
+  background: maroon;
+  padding: 15px;
+  color: white;
+  align-items: center;
+}
+
+.brand {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.nav-links button {
+  color: white;
+  margin: 0 10px;
+}
+
+.welcome-message {
+  font-size: 1.5em;
+  margin-top: 20px;
+}
+
+h3 {
+  margin-top: 30px;
+  color: maroon;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.actions {
+  margin: 10px 0;
+}
+
+table {
+  width: 100%;
+  margin-top: 10px;
+}
+
+mat-paginator {
+  margin-top: 20px;
+}

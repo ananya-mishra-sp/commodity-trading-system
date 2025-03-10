@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Delete {{ data.type === 'commodity' ? 'Commodity' : 'User' }}</h2>
+<mat-dialog-content>
+  <p>Enter the details of the {{ data.type }} you want to delete:</p>
+  <mat-form-field appearance="outline">
+    <mat-label>ID</mat-label>
+    <input matInput type="number" [(ngModel)]="id" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ data.type === 'commodity' ? 'Commodity Name' : 'Username' }}</mat-label>
+    <input matInput [(ngModel)]="name" />
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="warn" (click)="delete()">Delete</button>
+</mat-dialog-actions>
