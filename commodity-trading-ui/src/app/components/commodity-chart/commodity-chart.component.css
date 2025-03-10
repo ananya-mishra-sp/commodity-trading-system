@@ -3,18 +3,30 @@ table {
     margin-top: 20px;
     border-collapse: collapse;
   }
+
+.mat-mdc-table .mat-mdc-header-cell {
+    background-color: rgb(164, 4, 4);
+    font-weight: bold;
+    font-size: larger;
+ }
   
   th, td {
     padding: 10px;
-    text-align: left;
+    text-align: center;
+    background-color: rgb(203, 171, 171);
+    color: rgb(6, 6, 6);
     border-bottom: 1px solid #ddd;
   }
   
   th {
-    background-color: maroon;
-    color: rgb(186, 8, 8);
+    color: rgb(204, 202, 202);
   }
   
+  .mat-mdc-raised-button:not(:disabled) {
+    color: rgb(154, 3, 3);
+    background-color: #af8181;
+  }
+
   button {
     margin-top: 5px;
   }

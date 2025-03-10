@@ -1,3 +1,25 @@
+.welcome-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.welcome-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: maroon;
+}
+
+.trade-message-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.trade-message {
+  font-size: 20px;
+  font-weight: bold;
+  color: rgb(248, 135, 135);
+}
+
 .dashboard-container {
   width: 80%;
   margin: auto;

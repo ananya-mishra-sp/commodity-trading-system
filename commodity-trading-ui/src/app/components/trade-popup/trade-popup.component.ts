@@ -5,7 +5,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { ReactiveFormsModule } from '@angular/forms'; // ✅ Import this
+import { ReactiveFormsModule } from '@angular/forms';
+import { TransactionService } from '../../services/transaction.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-trade-popup',
@@ -17,31 +19,44 @@ import { ReactiveFormsModule } from '@angular/forms'; // ✅ Import this
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
-    ReactiveFormsModule // ✅ Add this
+    ReactiveFormsModule,
+    MatSnackBarModule
   ]
 })
 export class TradePopupComponent {
-  tradeForm: FormGroup; // ✅ Ensure tradeForm is declared
+  tradeForm: FormGroup;
 
   constructor(
     public dialogRef: MatDialogRef<TradePopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private transactionService: TransactionService,
+    private snackBar: MatSnackBar
   ) {
     this.tradeForm = this.fb.group({
-      quantity: [null, [Validators.required, Validators.min(1)]], // ✅ Ensure this is correctly initialized
+      quantity: [null, [Validators.required, Validators.min(1)]],
       action: ['buy', Validators.required]
     });
   }
 
   submitTrade() {
     if (this.tradeForm.valid) {
-      console.log('Trade submitted:', {
-        commodity: this.data.commodity,
-        ...this.tradeForm.value
-      });
+      const tradeData = {
+        userId: 1, // Replace with actual logged-in user ID
+        commodityId: this.data.commodity.id,
+        tradeType: this.tradeForm.value.action.toUpperCase(),
+        quantity: this.tradeForm.value.quantity
+      };
 
-      this.dialogRef.close(this.tradeForm.value); // ✅ Close dialog with form data
+      this.transactionService.placeTrade(tradeData).subscribe({
+        next: () => {
+          this.snackBar.open('Transaction Successful!', 'OK', { duration: 3000, panelClass: 'success-snackbar' });
+          this.dialogRef.close(true); // Send success status back to dashboard
+        },
+        error: () => {
+          this.snackBar.open('Transaction Failed!', 'OK', { duration: 3000, panelClass: 'error-snackbar' });
+        }
+      });
     }
   }
 }
