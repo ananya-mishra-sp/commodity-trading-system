@@ -11,45 +11,56 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/admin")
+@CrossOrigin(origins = "http://localhost:4200") // Allow frontend access
 public class AdminController {
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
 
-    // 📌 Fetch paginated commodities
+    @Autowired
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
+
+    // ✅ Fetch paginated commodities
     @GetMapping("/commodities")
-    public Page<Commodity> getCommodities(
+    public ResponseEntity<Page<Commodity>> getCommodities(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "asc") String order) {
-        return adminService.getPaginatedCommodities(page, size, sortBy, order);
+        return ResponseEntity.ok(adminService.getPaginatedCommodities(page, size, sortBy, order));
     }
 
-    // 📌 Upload commodities via CSV
+    // ✅ Upload commodities via CSV (No external dependency)
     @PostMapping("/commodities/upload")
     public ResponseEntity<String> uploadCommodities(@RequestParam("file") MultipartFile file) {
         adminService.uploadCommodities(file);
         return ResponseEntity.ok("Commodities uploaded successfully!");
     }
 
-    // 📌 Delete commodity
+    // ✅ Delete commodity
     @DeleteMapping("/commodities/{id}")
-    public ResponseEntity<String> deleteCommodity(@PathVariable Integer id, @RequestParam String name) {
-        adminService.deleteCommodity(id, name);
+    public ResponseEntity<String> deleteCommodity(@PathVariable Integer id) {
+        adminService.deleteCommodity(id);
         return ResponseEntity.ok("Commodity deleted successfully!");
     }
 
-    // 📌 Fetch paginated users
+    // ✅ Fetch paginated users
     @GetMapping("/users")
-    public Page<User> getUsers(@RequestParam int page, @RequestParam int size) {
-        return adminService.getPaginatedUsers(page, size);
+    public ResponseEntity<Page<User>> getUsers(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String order) {
+
+        Page<User> users = adminService.getPaginatedUsers(page, size, sortBy, order);
+        return ResponseEntity.ok(users);
     }
 
-    // 📌 Delete user
+    // ✅ Delete user
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer id, @RequestParam String username) {
-        adminService.deleteUser(id, username);
+    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+        adminService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully!");
     }
 }

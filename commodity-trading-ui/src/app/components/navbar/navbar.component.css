@@ -1,7 +1,7 @@
 .navbar {
   display: flex;
   gap: 20px;
-  background: #606060;
+  background: #adadad;
   padding: 10px 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -15,10 +15,15 @@
 .nav-btn {
   font-weight: bold;
   color: #faf9f9; 
+  font-size: 16px;
+  margin-right: 15px;
 }
 
 .logout-btn {
   margin-left: auto;
   font-weight: bold;
-  color: #faf9f9;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: rgb(165, 120, 120)
 }

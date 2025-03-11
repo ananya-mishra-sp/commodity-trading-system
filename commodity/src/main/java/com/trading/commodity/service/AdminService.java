@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,25 +27,19 @@ public class AdminService {
         this.userRepository = userRepository;
     }
 
-    // 📌 Fetch commodities with sorting & pagination
     public Page<Commodity> getPaginatedCommodities(int page, int size, String sortBy, String order) {
-        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         return commodityRepository.findAll(pageable);
     }
 
-    // 📌 Upload commodities from CSV
     public void uploadCommodities(MultipartFile file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             List<Commodity> commodities = reader.lines()
                     .skip(1) // Skip header
                     .map(line -> {
                         String[] data = line.split(",");
-                        Commodity commodity = new Commodity();
-                        commodity.setName(data[0].trim());
-                        commodity.setUnit(data[1].trim());
-                        commodity.setCurrentPrice(BigDecimal.valueOf(Double.parseDouble(data[2].trim())));
-                        return commodity;
+                        return new Commodity(data[0].trim(), data[1].trim(), BigDecimal.valueOf(Double.parseDouble(data[2].trim())));
                     })
                     .collect(Collectors.toList());
 
@@ -55,19 +49,17 @@ public class AdminService {
         }
     }
 
-    // 📌 Delete commodity
-    public void deleteCommodity(Integer id, String name) {
+    public void deleteCommodity(Integer id) {
         commodityRepository.deleteById(id);
     }
 
-    // 📌 Fetch paginated users excluding password
-    public Page<User> getPaginatedUsers(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("username").ascending());
+    public Page<User> getPaginatedUsers(int page, int size, String sortBy, String order) {
+        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         return userRepository.findAll(pageable);
     }
 
-    // 📌 Delete user
-    public void deleteUser(Integer id, String username) {
+    public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
 }

@@ -5,9 +5,14 @@ import com.trading.commodity.repository.CommodityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommodityService {
@@ -21,8 +26,7 @@ public class CommodityService {
 
     public List<Commodity> getAllCommodities(String sortBy, String order) {
         Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-        return commodityRepository.findAll(sort);
+        return commodityRepository.findAll(Sort.by(direction, sortBy));
     }
 
     public Optional<Commodity> getCommodityById(Integer id) {
@@ -35,16 +39,59 @@ public class CommodityService {
 
     public Commodity updateCommodity(Integer id, Commodity commodityDetails) {
         return commodityRepository.findById(id)
-                .map(commodity -> {
-                    commodity.setName(commodityDetails.getName());
-                    commodity.setUnit(commodityDetails.getUnit());
-                    commodity.setCurrentPrice(commodityDetails.getCurrentPrice());
-                    return commodityRepository.save(commodity);
+                .map(existing -> {
+                    existing.setName(commodityDetails.getName());
+                    existing.setUnit(commodityDetails.getUnit());
+                    existing.setCurrentPrice(commodityDetails.getCurrentPrice());
+                    return commodityRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("Commodity not found with ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Commodity not found"));
     }
 
     public void deleteCommodity(Integer id) {
         commodityRepository.deleteById(id);
     }
+
+    public void processCSV(MultipartFile file) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            List<Commodity> commodities = reader.lines()
+                    .skip(1) // Skip header
+                    .map(line -> {
+                        String[] data = line.split(",");
+
+                        if (data.length < 4) {
+                            throw new IllegalArgumentException("Invalid CSV format");
+                        }
+
+                        String name = data[1].trim();
+                        String unit = data[2].trim();
+                        BigDecimal currentPrice = new BigDecimal(data[3].trim());
+
+                        // Check if commodity exists by name
+                        Optional<Commodity> existingCommodity = commodityRepository.findByName(name);
+
+                        if (existingCommodity.isPresent()) {
+                            // Update existing commodity
+                            Commodity commodity = existingCommodity.get();
+                            commodity.setUnit(unit);
+                            commodity.setCurrentPrice(currentPrice);
+                            return commodity;
+                        } else {
+                            // Create a new commodity
+                            Commodity newCommodity = new Commodity();
+                            newCommodity.setName(name);
+                            newCommodity.setUnit(unit);
+                            newCommodity.setCurrentPrice(currentPrice);
+                            return newCommodity;
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            // Save all (new and updated)
+            commodityRepository.saveAll(commodities);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to process CSV file: " + e.getMessage());
+        }
+    }
+
 }

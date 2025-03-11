@@ -11,16 +11,23 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   // 📌 Fetch paginated commodities
-  getCommodities(page: number, size: number, sort: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/commodities?page=${page}&size=${size}&sort=${sort}`);
+  getCommodities(page: number, size: number, sortBy: string = 'name', order: string = 'asc'): Observable<any> {
+    return this.http.get<any>(`http://localhost:8080/api/admin/commodities`, {
+      params: {
+        page: page.toString(),
+        size: size.toString(),
+        sortBy: sortBy,
+        order: order
+      }
+    });
   }
+  
 
   // 📌 Upload commodities via CSV
-  uploadCommodityCSV(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post(`${this.apiUrl}/commodities/upload`, formData);
+  uploadCommodityCSV(formData: FormData) {
+    return this.http.post('http://localhost:8080/api/commodities/upload', formData);
   }
+  
 
   // 📌 Delete a commodity
   deleteCommodity(id: number, name: string): Observable<any> {
@@ -28,9 +35,16 @@ export class AdminService {
   }
 
   // 📌 Fetch paginated users
-  getUsers(page: number, size: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/users?page=${page}&size=${size}`);
-  }
+  getUsers(page: number, size: number, sortBy: string = 'name', order: string = 'asc'): Observable<any> {
+    return this.http.get<any>(`http://localhost:8080/api/admin/users`, {
+      params: {
+        page: page.toString(),
+        size: size.toString(),
+        sortBy: sortBy,
+        order: order
+      }
+    });
+  }  
 
   // 📌 Delete a user
   deleteUser(id: number, username: string): Observable<any> {

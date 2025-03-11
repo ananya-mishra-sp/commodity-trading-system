@@ -40,7 +40,7 @@ public class Transaction {
         this.tradeDate = LocalDateTime.now();
     }
 
-    public Transaction(User user, Commodity commodity, String tradeType, BigDecimal quantity, BigDecimal tradePrice) {
+    public Transaction(User user, Commodity commodity, String tradeType, BigDecimal quantity, BigDecimal tradePrice, BigDecimal totalValue) {
         this.user = user;
         this.commodity = commodity;
         this.tradeType = tradeType;

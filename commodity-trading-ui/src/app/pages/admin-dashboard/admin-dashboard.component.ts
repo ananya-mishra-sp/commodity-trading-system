@@ -36,6 +36,8 @@ export class AdminDashboardComponent {
   pageSize = 10;
   commodityPage = 0;
   userPage = 0;
+  totalItems = 0;
+  totalUsers = 0
 
   constructor(private adminService: AdminService, public dialog: MatDialog) {}
 
@@ -46,28 +48,60 @@ export class AdminDashboardComponent {
 
   // 📌 Fetch commodities with pagination and sorting
   loadCommodities() {
-    this.adminService.getCommodities(this.commodityPage, this.pageSize, this.selectedSort)
-      .subscribe((data) => {
-        this.commodities = data.content;
-      });
+    this.adminService.getCommodities(this.commodityPage, this.pageSize).subscribe({
+      next: (response) => {
+        this.commodities = response.content;  // Extract commodities list from the response
+        this.totalItems = response.totalElements;  // Set total elements for pagination
+      },
+      error: (error) => {
+        console.error('Error fetching commodities:', error);
+      }
+    });
+  }
+
+  onPageChange(event: any) {
+    this.commodityPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadCommodities();
   }
 
   // 📌 Upload CSV file
-  uploadCSV(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.adminService.uploadCommodityCSV(file).subscribe(() => {
-        alert('Commodities uploaded successfully!');
-        this.loadCommodities();
+  uploadCSV(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0]; // Correctly extracting the File object
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      this.adminService.uploadCommodityCSV(formData).subscribe({
+        next: () => {
+          alert('Commodities uploaded successfully!');
+          this.loadCommodities();
+        },
+        error: (err) => {
+          alert('Error uploading CSV: ' + err.message);
+        }
       });
     }
-  }
+  }  
 
   // 📌 Fetch users with pagination
   loadUsers() {
-    this.adminService.getUsers(this.userPage, this.pageSize).subscribe((data) => {
-      this.users = data.content;
+    this.adminService.getUsers(this.userPage, this.pageSize).subscribe({
+      next: (response) => {
+        this.users = response.content;  // Get users list
+        this.totalUsers = response.totalElements;  // Get total count
+      },
+      error: (error) => {
+        console.error('Error fetching users:', error);
+      }
     });
+  }
+
+  onUserPageChange(event: any) {
+    this.userPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadUsers();
   }
 
   // 📌 Open delete popup

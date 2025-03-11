@@ -6,7 +6,7 @@
 .admin-navbar {
   display: flex;
   justify-content: space-between;
-  background: maroon;
+  background: rgb(125, 124, 124);
   padding: 15px;
   color: white;
   align-items: center;

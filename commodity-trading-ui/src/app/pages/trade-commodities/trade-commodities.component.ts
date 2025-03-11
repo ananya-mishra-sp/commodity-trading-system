@@ -5,19 +5,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommodityService } from '../../services/commodity.service';
-import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { CommodityChartComponent } from '../../components/commodity-chart/commodity-chart.component';
 import { TradePopupComponent } from '../../components/trade-popup/trade-popup.component';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-user-dashboard',
+  selector: 'app-trade-commodities',
   standalone: true,
-  templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.css'],
-  imports: [CommonModule, NavbarComponent, CommodityChartComponent, MatButtonModule, MatSelectModule, MatSnackBarModule, RouterOutlet]
+  templateUrl: './trade-commodities.component.html',
+  styleUrls: ['./trade-commodities.component.css'],
+  imports: [CommonModule, CommodityChartComponent, MatButtonModule, MatSelectModule, MatSnackBarModule]
 })
-export class UserDashboardComponent implements OnInit {
+export class TradeCommoditiesComponent implements OnInit {
   commoditiesList: any[] = [];
   selectedSort: string = 'name-asc';
 
@@ -46,7 +44,6 @@ export class UserDashboardComponent implements OnInit {
   sortCommodities() {
     this.loadCommodities();
   }
-
 
   openTradePopup(commodity: any) {
     const dialogRef = this.dialog.open(TradePopupComponent, {

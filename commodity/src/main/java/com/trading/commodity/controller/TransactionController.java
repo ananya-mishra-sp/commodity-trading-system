@@ -1,5 +1,6 @@
 package com.trading.commodity.controller;
 
+import com.trading.commodity.dto.TradeRequest;
 import com.trading.commodity.model.Transaction;
 import com.trading.commodity.service.TransactionService;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +20,16 @@ public class TransactionController {
     }
 
     @PostMapping("/trade")
-    public ResponseEntity<Transaction> placeTrade(
-            @RequestParam Integer userId,
-            @RequestParam Integer commodityId,
-            @RequestParam String tradeType,
-            @RequestParam BigDecimal quantity) {
-
-        Transaction transaction = transactionService.placeTrade(userId, commodityId, tradeType, quantity);
+    public ResponseEntity<Transaction> placeTrade(@RequestBody TradeRequest request) {
+        Transaction transaction = transactionService.placeTrade(
+                request.getUserId(),
+                request.getCommodityId(),
+                request.getTradeType(),
+                request.getQuantity()
+        );
         return ResponseEntity.ok(transaction);
     }
+
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Transaction>> getUserTransactions(@PathVariable Integer userId) {

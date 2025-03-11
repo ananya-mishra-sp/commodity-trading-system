@@ -3,13 +3,18 @@ package com.trading.commodity.controller;
 import com.trading.commodity.model.Commodity;
 import com.trading.commodity.service.CommodityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/commodities")
+@CrossOrigin(origins = "http://localhost:4200") // Allow frontend access
 public class CommodityController {
 
     private final CommodityService commodityService;
@@ -48,4 +53,20 @@ public class CommodityController {
         commodityService.deleteCommodity(id);
         return ResponseEntity.ok("Commodity deleted successfully");
     }
+
+    // ✅ Upload CSV (No external dependency)
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> uploadCommodities(@RequestParam("file") MultipartFile file) {
+        try {
+            commodityService.processCSV(file);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "CSV file uploaded successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to upload CSV: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
 }

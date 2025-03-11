@@ -6,8 +6,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommodityRepository extends JpaRepository<Commodity, Integer> {
-    List<Commodity> findAll(Sort sort);
+    Optional<Commodity> findByName(String name);
 }

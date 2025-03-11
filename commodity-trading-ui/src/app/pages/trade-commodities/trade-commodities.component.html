@@ -1,0 +1,21 @@
+<div class="welcome-container">
+  <h1 class="welcome-message">Welcome to Commodity Trading!</h1>
+</div>
+
+<div class="trade-message-container">
+  <h2 class="trade-message">Trade These Commodities:</h2>
+</div>
+
+<div class="sorting-container">
+  <mat-form-field appearance="outline" class="sort-dropdown">
+    <mat-label>Sort By</mat-label>
+    <mat-select [(value)]="selectedSort" (selectionChange)="sortCommodities()">
+      <mat-option value="name-asc">Name (A-Z)</mat-option>
+      <mat-option value="name-desc">Name (Z-A)</mat-option>
+      <mat-option value="currentPrice-asc">Price (Low-High)</mat-option>
+      <mat-option value="currentPrice-desc">Price (High-Low)</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<app-commodity-chart [commodities]="commoditiesList" (trade)="openTradePopup($event)"></app-commodity-chart>

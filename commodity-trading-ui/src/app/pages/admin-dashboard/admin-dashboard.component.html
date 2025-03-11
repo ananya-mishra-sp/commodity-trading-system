@@ -28,10 +28,10 @@
 
     <!-- Upload & Delete Buttons -->
     <div class="actions">
-      <button mat-raised-button color="primary">
-        <input type="file" (change)="uploadCSV($event)" accept=".csv" hidden #fileInput />
-        <label for="fileInput">Upload CSV</label>
-      </button>
+      <div class="file-upload">
+        <input type="file" #fileInput (change)="uploadCSV($event)" accept=".csv" hidden />
+        <button mat-raised-button color="primary" (click)="fileInput.click()">Upload CSV</button>
+      </div>      
       <button mat-raised-button color="warn" (click)="openDeletePopup('commodity')">Delete Commodity</button>
     </div>
 
@@ -62,7 +62,7 @@
     </table>
 
     <!-- Pagination -->
-    <mat-paginator [pageSize]="pageSize" (page)="commodityPage = $event.pageIndex; loadCommodities()"></mat-paginator>
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" (page)="onPageChange($event)"></mat-paginator>
   </div>
 
   <!-- 🌟 Users Section -->
@@ -101,6 +101,6 @@
     </table>
 
     <!-- Pagination -->
-    <mat-paginator [pageSize]="pageSize" (page)="userPage = $event.pageIndex; loadUsers()"></mat-paginator>
+    <mat-paginator [length]="totalUsers" [pageSize]="pageSize" (page)="onUserPageChange($event)"></mat-paginator>
   </div>
 </div>

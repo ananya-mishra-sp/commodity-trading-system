@@ -1,5 +1,6 @@
 <nav class="navbar">
-  <button mat-button class="nav-btn">Past Trades</button>
-  <button mat-button class="nav-btn">Reports</button>
-  <button mat-button color="warn" class="logout-btn">Logout</button>
+  <button mat-button class="nav-btn" (click)="navigateTo('trade-commodities')">Trade Commodities</button>
+  <button mat-button class="nav-btn" (click)="navigateTo('past-trades')">Past Trades</button>
+  <button mat-button class="nav-btn" (click)="navigateTo('reports')">Reports</button>
+  <button mat-button color="warn" class="logout-btn" (click)="logout()">Logout</button>
 </nav>

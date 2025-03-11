@@ -39,8 +39,9 @@ public class TransactionService {
         Commodity commodity = commodityOpt.get();
 
         BigDecimal tradePrice = commodity.getCurrentPrice();
-        Transaction transaction = new Transaction(user, commodity, tradeType, quantity, tradePrice);
+        BigDecimal totalValue = tradePrice.multiply(quantity);
 
+        Transaction transaction = new Transaction(user, commodity, tradeType, quantity, tradePrice, totalValue);
         return transactionRepository.save(transaction);
     }
 
