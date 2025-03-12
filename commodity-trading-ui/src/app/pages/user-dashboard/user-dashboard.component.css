@@ -1,37 +1,5 @@
-.welcome-container {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.welcome-message {
-  font-size: 40px;
-  font-weight: bold;
-  color: maroon;
-}
-
-.trade-message-container {
-  text-align: center;
-  margin-top: 15px;
-}
-
-.trade-message {
-  font-size: 26px;
-  font-weight: bold;
-  color: rgb(248, 135, 135);
-}
-
 .dashboard-container {
-  width: 80%;
+  width: 95%;
   margin: auto;
   padding: 20px;
-}
-
-.sorting-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
-
-.sort-dropdown {
-  width: 200px;
 }
