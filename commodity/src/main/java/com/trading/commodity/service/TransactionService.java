@@ -41,6 +41,9 @@ public class TransactionService {
         BigDecimal tradePrice = commodity.getCurrentPrice();
         BigDecimal totalValue = tradePrice.multiply(quantity);
 
+        // Debugging logs
+        System.out.println("Placing trade: User " + userId + ", Commodity " + commodityId + ", Type: " + tradeType + ", Quantity: " + quantity);
+
         Transaction transaction = new Transaction(user, commodity, tradeType, quantity, tradePrice, totalValue);
         return transactionRepository.save(transaction);
     }

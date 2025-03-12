@@ -6,7 +6,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommodityService } from '../../services/commodity.service';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { CommodityChartComponent } from '../../components/commodity-chart/commodity-chart.component';
 import { TradePopupComponent } from '../../components/trade-popup/trade-popup.component';
 import { RouterOutlet } from '@angular/router';
 
@@ -15,7 +14,7 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   templateUrl: './user-dashboard.component.html',
   styleUrls: ['./user-dashboard.component.css'],
-  imports: [CommonModule, NavbarComponent, CommodityChartComponent, MatButtonModule, MatSelectModule, MatSnackBarModule, RouterOutlet]
+  imports: [CommonModule, NavbarComponent, MatButtonModule, MatSelectModule, MatSnackBarModule, RouterOutlet]
 })
 export class UserDashboardComponent implements OnInit {
   commoditiesList: any[] = [];

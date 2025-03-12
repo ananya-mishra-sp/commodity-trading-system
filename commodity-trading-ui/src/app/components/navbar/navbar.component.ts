@@ -13,8 +13,8 @@ import { Router } from '@angular/router';
 export class NavbarComponent {
   constructor(private router: Router) {}
 
-  navigateTo(route: string) {
-    this.router.navigate(['dashboard', route]); // Navigates inside User Dashboard
+  navigateTo(page: string) {
+    this.router.navigate([`/user-dashboard/${page}`]);
   }
 
   logout() {

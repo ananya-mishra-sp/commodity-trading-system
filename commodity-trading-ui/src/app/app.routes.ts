@@ -34,6 +34,6 @@ export const routes: Routes = [
       { path: '', redirectTo: 'trade-commodities', pathMatch: 'full' } // Default view
     ]
   },
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' }, // User Dashboard
   { path: 'admin-dashboard', component: AdminDashboardComponent }, // Admin Dashboard
+  { path: '**', redirectTo: '', pathMatch: 'full' } // Redirect unknown routes to home
 ];
