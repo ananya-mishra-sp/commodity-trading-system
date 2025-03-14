@@ -10,7 +10,11 @@ export class ReportService {
 
   constructor(private http: HttpClient) {}
 
-  getUserReport(userId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/user/${userId}`);
+  getPortfolio(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/portfolio/${userId}`);
+  }
+
+  getRiskReports(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/risk/${userId}`);
   }
 }

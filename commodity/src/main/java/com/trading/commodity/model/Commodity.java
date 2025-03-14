@@ -21,13 +21,16 @@ public class Commodity {
     private BigDecimal currentPrice;
 
     // Constructor
-    public Commodity() {
+    public Commodity(Integer commodityId) {
     }
 
     public Commodity(String name, String unit, BigDecimal currentPrice) {
         this.name = name;
         this.unit = unit;
         this.currentPrice = currentPrice;
+    }
+
+    public Commodity() {
     }
 
     // Getters and Setters

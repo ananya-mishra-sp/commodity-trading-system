@@ -54,7 +54,7 @@ public class CommodityController {
         return ResponseEntity.ok("Commodity deleted successfully");
     }
 
-    // ✅ Upload CSV (No external dependency)
+    // Upload CSV (No external dependency)
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadCommodities(@RequestParam("file") MultipartFile file) {
         try {

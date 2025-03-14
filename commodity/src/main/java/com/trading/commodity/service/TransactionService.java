@@ -15,40 +15,58 @@ import java.util.Optional;
 
 @Service
 public class TransactionService {
-
     private final TransactionRepository transactionRepository;
-    private final UserRepository userRepository;
-    private final CommodityRepository commodityRepository;
+    private final PortfolioService portfolioService;
+    private final RiskReportService riskReportService;
+    private final UserRepository userRepository; // Add this
+    private final CommodityRepository commodityRepository; // Add this
 
-    public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository, CommodityRepository commodityRepository) {
+    public TransactionService(
+            TransactionRepository transactionRepository,
+            PortfolioService portfolioService,
+            RiskReportService riskReportService,
+            UserRepository userRepository, // Inject this
+            CommodityRepository commodityRepository // Inject this
+    ) {
         this.transactionRepository = transactionRepository;
+        this.portfolioService = portfolioService;
+        this.riskReportService = riskReportService;
         this.userRepository = userRepository;
         this.commodityRepository = commodityRepository;
     }
 
     @Transactional
-    public Transaction placeTrade(Integer userId, Integer commodityId, String tradeType, BigDecimal quantity) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        Optional<Commodity> commodityOpt = commodityRepository.findById(commodityId);
+    public Transaction addTransaction(Integer userId, Integer commodityId, String tradeType, BigDecimal quantity, BigDecimal tradePrice) {
+        // Fetch User and Commodity from the database
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (userOpt.isEmpty() || commodityOpt.isEmpty()) {
-            throw new IllegalArgumentException("User or Commodity not found");
-        }
+        Commodity commodity = commodityRepository.findById(commodityId)
+                .orElseThrow(() -> new RuntimeException("Commodity not found"));
 
-        User user = userOpt.get();
-        Commodity commodity = commodityOpt.get();
+        // Create a new Transaction
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setCommodity(commodity);
+        transaction.setTradeType(tradeType);
+        transaction.setQuantity(quantity);
+        transaction.setTradePrice(tradePrice);
 
-        BigDecimal tradePrice = commodity.getCurrentPrice();
-        BigDecimal totalValue = tradePrice.multiply(quantity);
+        // Calculate total value
+        transaction.setTotalValue(commodity.getCurrentPrice().multiply(quantity));
 
-        // Debugging logs
-        System.out.println("Placing trade: User " + userId + ", Commodity " + commodityId + ", Type: " + tradeType + ", Quantity: " + quantity);
+        // Save the transaction in the database
+        transactionRepository.save(transaction);
 
-        Transaction transaction = new Transaction(user, commodity, tradeType, quantity, tradePrice, totalValue);
-        return transactionRepository.save(transaction);
+        // Update Portfolio and Risk Report
+        portfolioService.updatePortfolio(userId, commodityId);
+        riskReportService.updateRiskReport(userId, commodityId);
+
+        return transaction; // Return the saved transaction
     }
 
     public List<Transaction> getUserTransactions(Integer userId) {
         return transactionRepository.findByUserId(userId);
     }
+
 }

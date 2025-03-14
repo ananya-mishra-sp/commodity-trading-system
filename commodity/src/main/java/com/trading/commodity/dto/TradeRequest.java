@@ -7,37 +7,23 @@ public class TradeRequest {
     private Integer commodityId;
     private String tradeType;
     private BigDecimal quantity;
+    private BigDecimal tradePrice;
 
+    // Getters and Setters
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
 
-    public Integer getUserId() {
-        return userId;
+    public Integer getCommodityId() { return commodityId; }
+    public void setCommodityId(Integer commodityId) { this.commodityId = commodityId; }
+
+    public String getTradeType() { return tradeType; }
+    public void setTradeType(String tradeType) { this.tradeType = tradeType; }
+
+    public BigDecimal getQuantity() { return quantity; }
+    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; }
+
+    public void setTradePrice(BigDecimal tradePrice) {
+        this.tradePrice = tradePrice;
     }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getCommodityId() {
-        return commodityId;
-    }
-
-    public void setCommodityId(Integer commodityId) {
-        this.commodityId = commodityId;
-    }
-
-    public String getTradeType() {
-        return tradeType;
-    }
-
-    public void setTradeType(String tradeType) {
-        this.tradeType = tradeType;
-    }
-
-    public BigDecimal getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = quantity;
-    }
+    public BigDecimal getTradePrice(){ return tradePrice; }
 }

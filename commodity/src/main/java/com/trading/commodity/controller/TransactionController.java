@@ -21,15 +21,15 @@ public class TransactionController {
 
     @PostMapping("/trade")
     public ResponseEntity<Transaction> placeTrade(@RequestBody TradeRequest request) {
-        Transaction transaction = transactionService.placeTrade(
+        Transaction transaction = transactionService.addTransaction(
                 request.getUserId(),
                 request.getCommodityId(),
                 request.getTradeType(),
-                request.getQuantity()
+                request.getQuantity(),
+                request.getTradePrice()
         );
         return ResponseEntity.ok(transaction);
     }
-
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Transaction>> getUserTransactions(@PathVariable Integer userId) {

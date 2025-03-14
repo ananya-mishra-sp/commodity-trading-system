@@ -25,6 +25,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class TradePopupComponent {
   tradeForm: FormGroup;
+  totalPrice: number = 0; // Stores total price dynamically
 
   constructor(
     public dialogRef: MatDialogRef<TradePopupComponent>,
@@ -33,10 +34,24 @@ export class TradePopupComponent {
     private transactionService: TransactionService,
     private snackBar: MatSnackBar
   ) {
+    
     this.tradeForm = this.fb.group({
       quantity: [null, [Validators.required, Validators.min(1)]],
       action: ['buy', Validators.required]
     });
+
+    // Listen for quantity changes and update total price
+    this.tradeForm.get('quantity')?.valueChanges.subscribe((quantity) => {
+      this.updateTotalPrice(quantity);
+    });
+  }
+
+  updateTotalPrice(quantity: number) {
+    if (quantity && quantity > 0) {
+      this.totalPrice = quantity * this.data.commodity.currentPrice;
+    } else {
+      this.totalPrice = 0;
+    }
   }
 
   submitTrade() {
@@ -44,19 +59,25 @@ export class TradePopupComponent {
       const tradeData = {
         userId: 1, // Replace with actual logged-in user ID
         commodityId: this.data.commodity.id,
-        tradeType: this.tradeForm.value.action.toUpperCase(),
+        tradePrice: this.data.commodity.currentPrice,
+        tradeType: this.capitalizeFirstLetter(this.tradeForm.value.action),
         quantity: this.tradeForm.value.quantity
       };
+
+      console.log(tradeData);
 
       this.transactionService.placeTrade(tradeData).subscribe({
         next: () => {
           this.snackBar.open('Transaction Successful!', 'OK', { duration: 3000, panelClass: 'success-snackbar' });
-          this.dialogRef.close(true); // Send success status back to dashboard
+          this.dialogRef.close(true);
         },
         error: () => {
           this.snackBar.open('Transaction Failed!', 'OK', { duration: 3000, panelClass: 'error-snackbar' });
         }
       });
     }
+  }
+  capitalizeFirstLetter(value: string): string {
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
 }

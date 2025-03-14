@@ -5,14 +5,32 @@
     padding: 20px;
     color: black;
   }
-  
-  .full-width {
-    width: 100%;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-  }
-  
+
+h2{
+    padding-left: 15px;
+    color: rgb(174, 5, 5);
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.total-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #040404;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.spacer {
+  height: 10px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20px;
+}

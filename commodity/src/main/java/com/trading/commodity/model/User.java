@@ -31,7 +31,8 @@ public class User {
     private LocalDateTime createdAt;
 
     // Constructor
-    public User() {
+    public User(){}
+    public User(Integer userId) {
         this.createdAt = LocalDateTime.now();
     }
 

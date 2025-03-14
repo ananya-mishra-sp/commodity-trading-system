@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
+import { Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Import Snackbar
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     MatDialogModule,
     CommonModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSnackBarModule // Add Snackbar module
   ],
 })
 export class LoginComponent {
@@ -30,23 +33,31 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private dialogRef: MatDialogRef<LoginComponent>
+    private dialogRef: MatDialogRef<LoginComponent>,
+    private router: Router,
+    private snackBar: MatSnackBar // Inject Snackbar
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', Validators.required], // Changed to username
       password: ['', Validators.required],
-      role: ['', Validators.required], // Role dropdown
+      role: ['', Validators.required],
     });
   }
 
   login() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
-        next: () => {
+        next: (role) => {
+          this.snackBar.open('Login Successful', 'Close', { duration: 3000, panelClass: ['success-snackbar'] }); // Show success message
           this.dialogRef.close();
+          if (role === 'USER') {
+            this.router.navigate(['/user-dashboard']);
+          } else if (role === 'ADMIN') {
+            this.router.navigate(['/admin-dashboard']);
+          }
         },
         error: (err) => {
-          this.errorMessage = err.error?.message || 'Invalid credentials';
+          this.errorMessage = err.error || 'Invalid credentials';
         },
       });
     }
