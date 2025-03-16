@@ -22,6 +22,11 @@
   margin: 0 10px;
 }
 
+.mat-mdc-raised-button:not(:disabled){
+  background-color: #c06f6f;
+  margin: 5px;
+}
+
 .welcome-message {
   font-size: 1.5em;
   margin-top: 20px;
@@ -36,6 +41,7 @@ h3 {
   display: flex;
   align-items: center;
   margin: 10px 0;
+  color: aliceblue;
 }
 
 .actions {

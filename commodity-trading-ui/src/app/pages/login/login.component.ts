@@ -47,12 +47,14 @@ export class LoginComponent {
   login() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
-        next: (role) => {
-          this.snackBar.open('Login Successful', 'Close', { duration: 3000, panelClass: ['success-snackbar'] }); // Show success message
+        next: (response) => {
+          this.snackBar.open('Login Successful', 'Close', { duration: 3000, panelClass: ['success-snackbar'] });
+  
           this.dialogRef.close();
-          if (role === 'USER') {
+  
+          if (response.role === 'User') {
             this.router.navigate(['/user-dashboard']);
-          } else if (role === 'ADMIN') {
+          } else if (response.role === 'Admin') {
             this.router.navigate(['/admin-dashboard']);
           }
         },
@@ -62,7 +64,7 @@ export class LoginComponent {
       });
     }
   }
-
+  
   closeModal() {
     this.dialogRef.close();
   }

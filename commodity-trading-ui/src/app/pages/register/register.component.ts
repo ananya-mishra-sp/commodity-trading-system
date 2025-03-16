@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +19,8 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     MatFormFieldModule,
     MatDialogModule,
-    CommonModule
+    CommonModule,
+    MatSnackBarModule
   ],
 })
 export class RegisterComponent {
@@ -30,7 +32,8 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private dialogRef: MatDialogRef<RegisterComponent>
+    private dialogRef: MatDialogRef<RegisterComponent>,
+    private snackBar: MatSnackBar
   ) {
     this.registerForm = this.fb.group({
       fullName: ['', Validators.required],
@@ -67,11 +70,23 @@ export class RegisterComponent {
       }
 
       if (this.usernameExists || this.emailExists) {
+        this.errorMessage = 'Username or email already exists';
         return;
       }
 
-      this.authService.register(this.registerForm.value).subscribe({
+      const userData = {
+        name: this.registerForm.value.fullName, // Fixing "fullName" -> "name"
+        username: this.registerForm.value.username,
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password,
+      };  
+
+      this.authService.register(userData).subscribe({
         next: () => {
+          this.snackBar.open('Registration Successful! Redirecting to login...', 'Close', {
+            duration: 3000,
+            panelClass: 'success-snackbar',
+          });
           this.dialogRef.close();
         },
         error: (err) => {
@@ -79,9 +94,5 @@ export class RegisterComponent {
         },
       });
     }
-  }
-
-  closeModal() {
-    this.dialogRef.close();
   }
 }

@@ -1,6 +1,7 @@
 package com.trading.commodity.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,19 +21,27 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private Role role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Constructor
-    public User(){}
-    public User(Integer userId) {
+    public User() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public User(String name, String username, String email, String password, Role role) {
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
         this.createdAt = LocalDateTime.now();
     }
 

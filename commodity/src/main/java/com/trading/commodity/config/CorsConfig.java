@@ -14,11 +14,11 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);  // Required for authentication
-        config.setAllowedOrigins(List.of("http://localhost:4200")); // Frontend URL
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(List.of("http://localhost:4200")); // Angular frontend
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        config.setExposedHeaders(List.of("Authorization")); // Expose Authorization header if needed
+        config.setAllowedHeaders(List.of("*")); // Allow all headers
+        config.setExposedHeaders(List.of("Authorization")); // Expose auth token if needed
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
