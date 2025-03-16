@@ -38,6 +38,7 @@ export class AdminDashboardComponent {
   userPage = 0;
   totalItems = 0;
   totalUsers = 0
+  router: any;
 
   constructor(private adminService: AdminService, public dialog: MatDialog) {}
 
@@ -89,8 +90,9 @@ export class AdminDashboardComponent {
   loadUsers() {
     this.adminService.getUsers(this.userPage, this.pageSize).subscribe({
       next: (response) => {
-        this.users = response.content;  // Get users list
-        this.totalUsers = response.totalElements;  // Get total count
+        // Filter users to exclude Admins
+        this.users = response.content.filter((user: { role: string; }) => user.role === 'User');  
+        this.totalUsers = this.users.length;  // Adjust total count based on filtered users
       },
       error: (error) => {
         console.error('Error fetching users:', error);
@@ -136,7 +138,9 @@ export class AdminDashboardComponent {
 
   // 📌 Logout
   logout() {
+    localStorage.clear();  // Clear any stored tokens or data
+    sessionStorage.clear();  // Clear session storage
     alert('Logging out...');
-    // Implement actual logout logic here
-  }
+    this.router.navigate(['/home']);  // Redirect to landing page
+  }  
 }

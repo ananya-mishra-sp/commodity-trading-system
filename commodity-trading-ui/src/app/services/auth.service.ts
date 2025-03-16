@@ -20,6 +20,11 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, userData, { responseType: 'text' });
   }
 
+  getUserId(): number | null {
+    const userId = localStorage.getItem('userId');
+    return userId ? parseInt(userId, 10) : null;
+  }
+
   // Check if username exists
   checkUsername(username: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/check-username/${username}`);

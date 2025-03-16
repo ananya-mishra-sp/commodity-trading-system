@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransactionService } from '../../services/transaction.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-trade-popup',
@@ -32,7 +33,8 @@ export class TradePopupComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private transactionService: TransactionService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authService: AuthService
   ) {
     
     this.tradeForm = this.fb.group({
@@ -56,8 +58,15 @@ export class TradePopupComponent {
 
   submitTrade() {
     if (this.tradeForm.valid) {
+      const userId = this.authService.getUserId(); // Get user ID from AuthService
+
+    if (!userId) {
+      this.snackBar.open('Error: User not authenticated!', 'OK', { duration: 3000, panelClass: 'error-snackbar' });
+      return;
+    }
+
       const tradeData = {
-        userId: 1, // Replace with actual logged-in user ID
+        userId, // Replace with actual logged-in user ID
         commodityId: this.data.commodity.id,
         tradePrice: this.data.commodity.currentPrice,
         tradeType: this.capitalizeFirstLetter(this.tradeForm.value.action),
