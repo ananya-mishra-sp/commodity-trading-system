@@ -83,7 +83,7 @@ export class RegisterComponent {
 
       this.authService.register(userData).subscribe({
         next: () => {
-          this.snackBar.open('Registration Successful! Redirecting to login...', 'Close', {
+          this.snackBar.open('Registration Successful!', 'Close', {
             duration: 3000,
             panelClass: 'success-snackbar',
           });

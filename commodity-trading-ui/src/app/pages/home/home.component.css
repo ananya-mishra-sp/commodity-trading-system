@@ -1,4 +1,76 @@
 /* General Styles */
+
+/* Hero Section */
+  .hero {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--secondary-color);
+    color: var(--text-color);
+  }
+  
+  .hero h1 {
+    font-size: 40px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .hero p {
+    font-size: 18px;
+  }
+  
+  .action-buttons {
+    margin-top: 20px;
+  }
+  
+  .action-buttons button {
+    margin: 10px;
+    font-size: 16px;
+    padding: 10px 20px;
+    font-weight: bold;
+  }
+  
+  /* Commodity Section */
+  .section-title {
+    text-align: center;
+    margin: 40px 0 20px;
+    font-size: 28px;
+    color: var(--text-color);
+  }
+  
+  .commodity-grid {
+    padding: 0 10%;
+  }
+  
+  .commodity-card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    text-align: center;
+    border-radius: 12px;
+    padding: 15px;
+  }
+  
+  .commodity-card img {
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  /* Features Section */
+  .features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+  }
+  
+  .feature-card {
+    width: 30%;
+    text-align: center;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 20px;
+    border-radius: 12px;
+  }
+  
 body {
   background-color: white;
   color: black;
@@ -73,17 +145,52 @@ button[color="primary"]:hover {
   margin-top: 40px;
   color: #800000; /* Maroon */
 }
-.commodity-grid {
-  margin: 40px auto;
-  max-width: 1200px;
+.commodity-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-gap: 20px; /* Space between cards */
+  padding: 20px;
+  max-width: 900px;
+  margin: auto; /* Center the grid */
 }
 
-/* Commodity Card */
 .commodity-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  text-align: center;
+  padding: 15px;
+}
+
+.commodity-card img {
   width: 100%;
-  height: 350px;
-  perspective: 1000px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.commodity-info {
+  margin-top: 10px;
+}
+
+.commodity-info h3 {
+  font-size: 20px;
+  color: #800000; /* Maroon */
+}
+
+.commodity-info p {
+  font-size: 14px;
+  color: #333;
+}
+
+.commodity-card {
   cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.commodity-card:hover {
+  transform: scale(1.03);
 }
 
 .card-inner {
@@ -147,6 +254,17 @@ button[color="primary"]:hover {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.card-back h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.card-back p {
+  font-size: 14px;
+  color: white;
+  padding: 0 10px;
 }
 
 /* Feature Cards */

@@ -9,26 +9,15 @@
 
 <h2 class="section-title">Commodities You Could Trade On</h2>
 
-<mat-grid-list cols="3" rowHeight="350px" gutterSize="16px" class="commodity-grid">
-  <mat-grid-tile *ngFor="let commodity of commodities">
-    <div class="commodity-card" (click)="flipCard(commodity)">
-      <div class="card-inner" [class.flipped]="commodity.flipped">
-        <!-- Front Side (Image + Name Overlay) -->
-        <div class="card-front">
-          <img [src]="commodity.image" alt="{{ commodity.name }}">
-          <div class="overlay">
-            <h2>{{ commodity.name }}</h2>
-          </div>
-        </div>
-        <!-- Back Side (Name + Description) -->
-        <div class="card-back">
-          <mat-card-title>{{ commodity.name }}</mat-card-title>
-          <mat-card-content>{{ commodity.description }}</mat-card-content>
-        </div>
-      </div>
+<div class="commodity-container">
+  <div class="commodity-card" *ngFor="let commodity of commodities" (click)="openCommodityDetails(commodity)">
+    <img [src]="commodity.image" alt="{{ commodity.name }}">
+    <div class="commodity-info">
+      <h3>{{ commodity.name }}</h3>
+      <p>{{ commodity.description }}</p>
     </div>
-  </mat-grid-tile>
-</mat-grid-list>
+  </div>
+</div>
 
 <h2 class="section-title">Trade Here!</h2>
 

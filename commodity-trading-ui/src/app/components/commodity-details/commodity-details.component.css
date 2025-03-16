@@ -1,0 +1,12 @@
+.commodity-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+mat-dialog-content {
+  font-size: 16px;
+  line-height: 1.5;
+}
