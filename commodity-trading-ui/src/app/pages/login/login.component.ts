@@ -48,8 +48,10 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
+          localStorage.setItem('userId', response.userId.toString()); // Store userId
+          localStorage.setItem('role', response.role); // Store role
+          
           this.snackBar.open('Login Successful', 'Close', { duration: 3000, panelClass: ['success-snackbar'] });
-  
           this.dialogRef.close();
   
           if (response.role === 'User') {
@@ -59,11 +61,11 @@ export class LoginComponent {
           }
         },
         error: (err) => {
-          this.errorMessage = err.error || 'Invalid credentials';
+          this.errorMessage = err.error.message || 'Invalid credentials';
         },
       });
     }
-  }
+  }  
   
   closeModal() {
     this.dialogRef.close();

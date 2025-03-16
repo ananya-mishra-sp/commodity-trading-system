@@ -14,7 +14,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/commodities")
-@CrossOrigin(origins = "http://localhost:4200") // Allow frontend access
 public class CommodityController {
 
     private final CommodityService commodityService;

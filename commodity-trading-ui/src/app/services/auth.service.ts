@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,11 +9,17 @@ import { Observable } from 'rxjs';
 export class AuthService {
   private apiUrl = 'http://localhost:8080/api/auth'; // Base API URL
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {} // Inject Router
 
   // Login method - expects a structured response with role
-  login(credentials: { username: string; password: string; role: string }): Observable<{ token: string; role: string }> {
-    return this.http.post<{ token: string; role: string }>(`${this.apiUrl}/login`, credentials);
+  login(credentials: { username: string; password: string }): Observable<{ userId: number; role: string }> {
+    return this.http.post<{ userId: number; role: string }>(`${this.apiUrl}/login`, credentials);
+  }
+  
+  logout() {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('role');
+    this.router.navigate(['/']); // Redirect to the home page after logout
   }
 
   // Register method

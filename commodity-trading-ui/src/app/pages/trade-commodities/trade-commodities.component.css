@@ -29,3 +29,30 @@
 .sort-dropdown {
   width: 200px;
 }
+
+mat-label{
+  color: white;
+  font-size: larger;
+  font-weight: 500;
+}
+
+span.mat-mdc-select-value-text {
+  color: white !important;
+}
+
+span.mad-mdc-select{
+  color: aliceblue !important;
+}
+
+/* Ensure the dropdown border and label are white */
+.sort-dropdown .mat-mdc-form-field-outline {
+  color: white !important;
+  border-color: white !important;
+}
+
+/* Make the dropdown box background white for visibility */
+.sort-dropdown .mat-mdc-select {
+  background-color: rgb(6, 6, 6) !important;
+  color: rgb(247, 244, 244) !important; /* Ensure text inside the box is black for contrast */
+  border-radius: 4px; /* Slightly rounded corners for better aesthetics */
+}

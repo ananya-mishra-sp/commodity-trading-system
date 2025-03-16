@@ -15,17 +15,6 @@
   <div *ngIf="selectedTab === 'commodities'">
     <h3>Manage Commodities</h3>
 
-    <!-- Sorting Dropdown -->
-    <div class="controls">
-      <label>Sort By</label>
-      <mat-select [(value)]="selectedSort" (selectionChange)="loadCommodities()">
-        <mat-option value="name-asc">Name (A-Z)</mat-option>
-        <mat-option value="name-desc">Name (Z-A)</mat-option>
-        <mat-option value="price-asc">Price (Low to High)</mat-option>
-        <mat-option value="price-desc">Price (High to Low)</mat-option>
-      </mat-select>
-    </div>
-
     <!-- Upload & Delete Buttons -->
     <div class="actions">
       <div class="file-upload">

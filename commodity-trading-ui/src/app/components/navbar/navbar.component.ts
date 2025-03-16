@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,15 +12,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   navigateTo(page: string) {
     this.router.navigate([`/user-dashboard/${page}`]);
   }
 
   logout() {
-    // Clear session storage/local storage or any auth token
-    localStorage.removeItem('authToken'); 
-    this.router.navigate(['/']);
+    this.authService.logout(); // Call the logout method from AuthService
   }
 }

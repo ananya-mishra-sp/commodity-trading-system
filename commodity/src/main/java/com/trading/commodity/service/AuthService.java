@@ -43,13 +43,13 @@ public class AuthService {
         return "User registered successfully!";
     }
 
-    public String authenticateUser(LoginRequest loginRequest) {
+    public User authenticateUser(LoginRequest loginRequest) {
         Optional<User> userOptional = userRepository.findByUsername(loginRequest.getUsername());
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                return user.getRole().toString(); // Return role if authentication is successful
+                return user; // Return the full user object instead of just the role
             }
         }
         return null; // Invalid login

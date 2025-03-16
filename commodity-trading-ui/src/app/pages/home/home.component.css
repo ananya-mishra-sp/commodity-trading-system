@@ -280,3 +280,13 @@ button[color="primary"]:hover {
 .feature-card:hover {
   transform: scale(1.03);
 }
+
+mat-card-title{
+  color: rgb(94, 2, 2);
+  font-weight: 700;
+  padding-bottom: 20px;
+}
+
+mat-card-content{
+  color: black;
+}
