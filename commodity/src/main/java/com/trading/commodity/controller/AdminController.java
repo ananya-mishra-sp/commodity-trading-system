@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -30,21 +33,23 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getPaginatedCommodities(page, size, sortBy, order));
     }
 
-    // ✅ Upload commodities via CSV (No external dependency)
+    // Upload commodities via CSV (No external dependency)
     @PostMapping("/commodities/upload")
     public ResponseEntity<String> uploadCommodities(@RequestParam("file") MultipartFile file) {
         adminService.uploadCommodities(file);
         return ResponseEntity.ok("Commodities uploaded successfully!");
     }
 
-    // ✅ Delete commodity
+    // Delete commodity
     @DeleteMapping("/commodities/{id}")
-    public ResponseEntity<String> deleteCommodity(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, String>> deleteCommodity(@PathVariable Integer id) {
         adminService.deleteCommodity(id);
-        return ResponseEntity.ok("Commodity deleted successfully!");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Commodity deleted successfully!");
+        return ResponseEntity.ok(response);
     }
 
-    // ✅ Fetch paginated users
+    // Fetch paginated users
     @GetMapping("/users")
     public ResponseEntity<Page<User>> getUsers(
             @RequestParam int page,
@@ -56,10 +61,12 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
-    // ✅ Delete user
+    // Delete user
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Integer id) {
         adminService.deleteUser(id);
-        return ResponseEntity.ok("User deleted successfully!");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User deleted successfully!");
+        return ResponseEntity.ok(response);
     }
 }

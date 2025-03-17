@@ -10,7 +10,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgIf} from '@angular/common';
+import { Router } from '@angular/router';
+import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -37,10 +39,9 @@ export class AdminDashboardComponent {
   commodityPage = 0;
   userPage = 0;
   totalItems = 0;
-  totalUsers = 0
-  router: any;
+  totalUsers = 0;
 
-  constructor(private adminService: AdminService, public dialog: MatDialog) {}
+  constructor(private adminService: AdminService, public dialog: MatDialog, private router: Router) {}
 
   ngOnInit() {
     this.loadCommodities();
@@ -106,41 +107,72 @@ export class AdminDashboardComponent {
     this.loadUsers();
   }
 
-  // 📌 Open delete popup
-  openDeletePopup(type: 'commodity' | 'user') {
-    const dialogRef = this.dialog.open(DeletePopupComponent, {
-      width: '400px',
-      data: { type },
+  confirmDeleteCommodity(id: number, name: string) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Delete Commodity',
+        message: `Are you sure you want to delete the commodity: ${name}?`,
+      },
     });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        type === 'commodity' ? this.deleteCommodity(result.id, result.name) : this.deleteUser(result.id, result.name);
+  
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.deleteCommodity(id);
       }
     });
   }
+  
+  confirmDeleteUser(id: number, username: string) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Delete User',
+        message: `Are you sure you want to delete the user: ${username}?`,
+      },
+    });
+  
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.deleteUser(id);
+      }
+    });
+  }  
+
+  showMessageDialog(title: string, message: string) {
+    this.dialog.open(ConfirmationDialogComponent, {
+      data: { title, message },
+    });
+  }  
 
   // 📌 Delete commodity
-  deleteCommodity(id: number, name: string) {
-    this.adminService.deleteCommodity(id, name).subscribe(() => {
-      alert('Commodity deleted successfully!');
-      this.loadCommodities();
+  deleteCommodity(id: number) {
+    this.adminService.deleteCommodity(id).subscribe({
+      next: () => {
+        this.showMessageDialog('Success', 'Commodity deleted successfully!');
+        this.loadCommodities();
+      },
+      error: (err) => {
+        this.showMessageDialog('Error', 'Error deleting commodity: ' + err.message);
+      },
     });
   }
-
-  // 📌 Delete user
-  deleteUser(id: number, username: string) {
-    this.adminService.deleteUser(id, username).subscribe(() => {
-      alert('User deleted successfully!');
-      this.loadUsers();
+  
+  deleteUser(id: number) {
+    this.adminService.deleteUser(id).subscribe({
+      next: () => {
+        this.showMessageDialog('Success', 'User deleted successfully!');
+        this.loadUsers();
+      },
+      error: (err) => {
+        this.showMessageDialog('Error', 'Error deleting user: ' + err.message);
+      },
     });
-  }
+  }  
 
   // 📌 Logout
   logout() {
     localStorage.clear();  // Clear any stored tokens or data
     sessionStorage.clear();  // Clear session storage
-    alert('Logging out...');
+
     this.router.navigate(['/home']);  // Redirect to landing page
   }  
 }

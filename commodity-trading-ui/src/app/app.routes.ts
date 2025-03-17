@@ -5,6 +5,7 @@ import { TradeCommoditiesComponent } from './pages/trade-commodities/trade-commo
 import { PastTradesComponent } from './pages/past-trades/past-trades.component';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
+import { AdminAuthGuard } from './guards/admin-auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,6 +17,10 @@ export const routes: Routes = [
       { path: '', redirectTo: 'trade-commodities', pathMatch: 'full' } // Default view
     ]
   },
-  { path: 'admin-dashboard', component: AdminDashboardComponent }, // Admin Dashboard
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboardComponent,
+    canActivate: [AdminAuthGuard], // ✅ Protects the admin route
+  }, // Admin Dashboard
   { path: '**', redirectTo: '/', pathMatch: 'full' } // Redirect unknown routes to home
 ];

@@ -15,12 +15,16 @@ export class AuthService {
   login(credentials: { username: string; password: string }): Observable<{ userId: number; role: string }> {
     return this.http.post<{ userId: number; role: string }>(`${this.apiUrl}/login`, credentials);
   }
-  
+ 
   logout() {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('role');
-    this.router.navigate(['/']); // Redirect to the home page after logout
-  }
+    localStorage.clear();  // Clear all stored data
+    sessionStorage.clear();
+    this.router.navigate(['/login']);  // Redirect to login after logout
+  }  
+
+  isAdminLoggedIn(): boolean {
+    return !!localStorage.getItem('role') && localStorage.getItem('role') === 'Admin';
+  }  
 
   // Register method
   register(userData: { name: string; username: string; email: string; password: string }): Observable<any> {

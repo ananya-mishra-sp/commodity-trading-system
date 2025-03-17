@@ -1,8 +1,10 @@
+/* 🌟 Admin Dashboard Styles */
 .admin-dashboard {
   padding: 20px;
   font-family: 'Arial', sans-serif;
 }
 
+/* 🌟 Navbar */
 .admin-navbar {
   display: flex;
   justify-content: space-between;
@@ -22,37 +24,79 @@
   margin: 0 10px;
 }
 
-.mat-mdc-raised-button:not(:disabled){
-  background-color: #c06f6f;
+.mat-mdc-raised-button:not(:disabled) {
+  background-color: #8B0000; /* Dark Red */
   margin: 5px;
 }
 
+.mat-mdc-raised-button:not(:disabled):hover {
+  background-color: #a12a2a;
+}
+
+/* 🌟 Welcome Message */
 .welcome-message {
   font-size: 1.5em;
+  color: rgb(157, 47, 47);
   margin-top: 20px;
 }
 
-h3 {
-  margin-top: 30px;
-  color: maroon;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-  color: aliceblue;
-}
-
-.actions {
-  margin: 10px 0;
-}
-
+/* 🌟 Table Styling */
 table {
   width: 100%;
   margin-top: 10px;
+  border-collapse: collapse;
 }
 
-mat-paginator {
-  margin-top: 20px;
+/* 🌟 Table Header */
+.mat-mdc-table th {
+  background-color: #8B0000 !important; /* Dark Red */
+  color: white !important;
+  font-weight: bold;
+  text-align: left;
+  padding: 10px;
 }
+
+/* 🌟 Table Rows */
+.mat-mdc-table tr:nth-child(odd) {
+  background-color: #FFE6E6; /* Light Pink */
+}
+
+.mat-mdc-table tr:nth-child(even) {
+  background-color: #FFF5F5; /* Off White */
+}
+
+/* 🌟 Action Column */
+.action-btn {
+  color: white !important;
+  background-color: #D32F2F !important; /* Danger Red */
+  border-radius: 5px;
+  margin: 2px;
+}
+
+.action-btn:hover {
+  background-color: #b71c1c !important;
+}
+
+/* 🌟 Pagination */
+.mat-mdc-paginator {
+  background-color: #8B0000 !important; /* Dark Red */
+  color: white !important;
+}
+
+.mat-mdc-paginator-page-size {
+  color: white !important;
+}
+
+.mat-mdc-paginator-navigation {
+  color: white !important;
+}
+
+.mat-mdc-paginator-range-label {
+  color: white !important;
+}
+
+/* Ensure all buttons have white text */
+button.mat-mdc-button, button.mat-mdc-raised-button, button.mat-mdc-icon-button {
+  color: white !important;
+}
+

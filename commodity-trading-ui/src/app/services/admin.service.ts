@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -30,10 +30,10 @@ export class AdminService {
   
 
   // 📌 Delete a commodity
-  deleteCommodity(id: number, name: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/commodities/${id}?name=${name}`);
-  }
-
+  deleteCommodity(id: number) {
+    return this.http.delete(`${this.apiUrl}/commodities/${id}`, { responseType: 'text' });
+  }  
+  
   // 📌 Fetch paginated users
   getUsers(page: number, size: number, sortBy: string = 'name', order: string = 'asc'): Observable<any> {
     return this.http.get<any>(`http://localhost:8080/api/admin/users`, {
@@ -47,7 +47,8 @@ export class AdminService {
   }  
 
   // 📌 Delete a user
-  deleteUser(id: number, username: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/users/${id}?username=${username}`);
+  deleteUser(id: number) {
+    return this.http.delete(`${this.apiUrl}/users/${id}`, { responseType: 'text' });
   }
+  
 }
