@@ -46,13 +46,13 @@ public class RiskReportService {
         BigDecimal mean = transactions.stream()
                 .map(Transaction::getTradePrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(transactions.size()), BigDecimal.ROUND_HALF_UP);
+                .divide(BigDecimal.valueOf(transactions.size()));
 
         // Calculate variance
         BigDecimal variance = transactions.stream()
                 .map(t -> t.getTradePrice().subtract(mean).pow(2))
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(transactions.size() - 1), BigDecimal.ROUND_HALF_UP);
+                .divide(BigDecimal.valueOf(transactions.size() - 1));
 
         BigDecimal volatility = BigDecimal.valueOf(Math.sqrt(variance.doubleValue()));
 

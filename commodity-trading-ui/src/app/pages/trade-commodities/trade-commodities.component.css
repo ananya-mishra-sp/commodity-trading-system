@@ -309,7 +309,7 @@ span.mad-mdc-select{
   --mat-mdc-form-field-label-offset-x: -25px;
 }
 
-mat-label[_ngcontent-ng-c2645732783] {
+mat-label {
   color: white;
   font-size: medium;
   font-weight: 400;

@@ -1,18 +1,17 @@
-// import { Component, OnInit } from '@angular/core';
-import { AdminService } from '../../services/admin.service';
-import { MatDialog } from '@angular/material/dialog';
-import { DeletePopupComponent } from '../../components/delete-popup/delete-popup.component';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NgIf} from '@angular/common';
+import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { AdminService } from '../../services/admin.service';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -27,44 +26,42 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    NgIf
+    NgIf,
+    FormsModule, 
+    MatIcon
   ]
 })
-export class AdminDashboardComponent {
-  selectedTab = 'commodities'; // Default tab
-  commodities: any[] = [];
-  users: any[] = [];
-  selectedSort = 'name-asc';
-  pageSize = 10;
-  commodityPage = 0;
-  userPage = 0;
-  totalItems = 0;
-  totalUsers = 0;
+export class AdminDashboardComponent implements OnInit {
+  selectedTab = 'commodities';
+
+  // Full datasets
+  allCommodities: any[] = [];
+  allUsers: any[] = [];
+
+  // Filtered data (search results)
+  filteredCommodities: any[] = [];
+  filteredUsers: any[] = [];
+
+  // Paginated data (to display)
+  paginatedCommodities: any[] = [];
+  paginatedUsers: any[] = [];
+
+  // Pagination properties
+  pageSize: number = 10;
+  commodityPage: number = 0;
+  userPage: number = 0;
+  totalCommodities: number = 0;
+  totalUsers: number = 0;
+
+  // Search terms
+  commoditySearchTerm: string = '';
+  userSearchTerm: string = '';
 
   constructor(private adminService: AdminService, public dialog: MatDialog, private router: Router) {}
 
-  ngOnInit() {
-    this.loadCommodities();
-    this.loadUsers();
-  }
-
-  // 📌 Fetch commodities with pagination and sorting
-  loadCommodities() {
-    this.adminService.getCommodities(this.commodityPage, this.pageSize).subscribe({
-      next: (response) => {
-        this.commodities = response.content;  // Extract commodities list from the response
-        this.totalItems = response.totalElements;  // Set total elements for pagination
-      },
-      error: (error) => {
-        console.error('Error fetching commodities:', error);
-      }
-    });
-  }
-
-  onPageChange(event: any) {
-    this.commodityPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadCommodities();
+  ngOnInit(): void {
+    this.loadAllCommodities();
+    this.loadAllUsers();
   }
 
   // 📌 Upload CSV file
@@ -78,7 +75,7 @@ export class AdminDashboardComponent {
       this.adminService.uploadCommodityCSV(formData).subscribe({
         next: () => {
           alert('Commodities uploaded successfully!');
-          this.loadCommodities();
+          this.loadAllCommodities();
         },
         error: (err) => {
           alert('Error uploading CSV: ' + err.message);
@@ -87,13 +84,29 @@ export class AdminDashboardComponent {
     }
   }  
 
-  // 📌 Fetch users with pagination
-  loadUsers() {
-    this.adminService.getUsers(this.userPage, this.pageSize).subscribe({
-      next: (response) => {
-        // Filter users to exclude Admins
-        this.users = response.content.filter((user: { role: string; }) => user.role === 'User');  
-        this.totalUsers = this.users.length;  // Adjust total count based on filtered users
+  // ─── Load complete commodities dataset ─────────────────────────────
+  loadAllCommodities() {
+    // Assuming adminService.getAllCommodities() returns all commodities (or simulate using a very high page size)
+    this.adminService.getAllCommodities().subscribe({
+      next: (data: any[]) => {
+        this.allCommodities = data;
+        this.totalCommodities = data.length;
+        this.applyCommodityFilters();
+      },
+      error: (error) => {
+        console.error('Error fetching commodities:', error);
+      }
+    });
+  }
+
+  // ─── Load complete users dataset ─────────────────────────────
+  loadAllUsers() {
+    this.adminService.getAllUsers().subscribe({
+      next: (data: any[]) => {
+        // Exclude admins
+        this.allUsers = data.filter((user: any) => user.role === 'User');
+        this.totalUsers = this.allUsers.length;
+        this.applyUserFilters();
       },
       error: (error) => {
         console.error('Error fetching users:', error);
@@ -101,78 +114,139 @@ export class AdminDashboardComponent {
     });
   }
 
-  onUserPageChange(event: any) {
-    this.userPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadUsers();
+  // ─── Commodity Filtering and Pagination ─────────────────────────────
+  applyCommodityFilters() {
+    let filtered = [...this.allCommodities];
+    if (this.commoditySearchTerm.trim()) {
+      const query = this.commoditySearchTerm.toLowerCase().trim();
+      filtered = filtered.filter(item =>
+        item.name.toLowerCase().includes(query) ||
+        (item.unit && item.unit.toLowerCase().includes(query)) ||
+        String(item.id).includes(query) ||
+        String(item.currentPrice).includes(query)
+      );
+    }
+    this.filteredCommodities = filtered;
+    this.totalCommodities = filtered.length;
+    this.commodityPage = 0; // Reset to first page
+    this.updatePaginatedCommodities();
   }
 
+  updatePaginatedCommodities() {
+    const start = this.commodityPage * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedCommodities = this.filteredCommodities.slice(start, end);
+  }
+
+  onCommodityPageChange(event: PageEvent) {
+    this.commodityPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedCommodities();
+  }
+
+  searchCommodities() {
+    this.applyCommodityFilters();
+  }
+
+  clearCommoditySearch() {
+    this.commoditySearchTerm = '';
+    this.applyCommodityFilters();
+  }
+
+  // ─── User Filtering and Pagination ─────────────────────────────
+  applyUserFilters() {
+    let filtered = [...this.allUsers];
+    if (this.userSearchTerm.trim()) {
+      const query = this.userSearchTerm.toLowerCase().trim();
+      filtered = filtered.filter(user =>
+        user.name.toLowerCase().includes(query) ||
+        user.username.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query) ||
+        String(user.id).includes(query)
+      );
+    }
+    this.filteredUsers = filtered;
+    this.totalUsers = filtered.length;
+    this.userPage = 0; // Reset to first page
+    this.updatePaginatedUsers();
+  }
+
+  updatePaginatedUsers() {
+    const start = this.userPage * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedUsers = this.filteredUsers.slice(start, end);
+  }
+
+  onUserPageChange(event: PageEvent) {
+    this.userPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedUsers();
+  }
+
+  searchUsers() {
+    this.applyUserFilters();
+  }
+
+  clearUserSearch() {
+    this.userSearchTerm = '';
+    this.applyUserFilters();
+  }
+
+  // ─── Delete handlers ─────────────────────────────
   confirmDeleteCommodity(id: number, name: string) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Delete Commodity',
-        message: `Are you sure you want to delete the commodity: ${name}?`,
-      },
+        message: `Are you sure you want to delete the commodity: ${name}?`
+      }
     });
-  
-    dialogRef.afterClosed().subscribe((confirmed) => {
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
         this.deleteCommodity(id);
       }
     });
   }
-  
+
+  deleteCommodity(id: number) {
+    this.adminService.deleteCommodity(id).subscribe({
+      next: () => {
+        this.loadAllCommodities();
+      },
+      error: (err) => {
+        console.error('Error deleting commodity:', err);
+      }
+    });
+  }
+
   confirmDeleteUser(id: number, username: string) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Delete User',
-        message: `Are you sure you want to delete the user: ${username}?`,
-      },
+        message: `Are you sure you want to delete the user: ${username}?`
+      }
     });
-  
-    dialogRef.afterClosed().subscribe((confirmed) => {
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
         this.deleteUser(id);
       }
     });
-  }  
-
-  showMessageDialog(title: string, message: string) {
-    this.dialog.open(ConfirmationDialogComponent, {
-      data: { title, message },
-    });
-  }  
-
-  // 📌 Delete commodity
-  deleteCommodity(id: number) {
-    this.adminService.deleteCommodity(id).subscribe({
-      next: () => {
-        this.showMessageDialog('Success', 'Commodity deleted successfully!');
-        this.loadCommodities();
-      },
-      error: (err) => {
-        this.showMessageDialog('Error', 'Error deleting commodity: ' + err.message);
-      },
-    });
   }
-  
+
   deleteUser(id: number) {
     this.adminService.deleteUser(id).subscribe({
       next: () => {
-        this.showMessageDialog('Success', 'User deleted successfully!');
-        this.loadUsers();
+        this.loadAllUsers();
       },
       error: (err) => {
-        this.showMessageDialog('Error', 'Error deleting user: ' + err.message);
-      },
+        console.error('Error deleting user:', err);
+      }
     });
-  }  
+  }
 
-  // 📌 Logout
+  // ─── Logout ─────────────────────────────
   logout() {
-    localStorage.clear();  // Clear any stored tokens or data
-    sessionStorage.clear();  // Clear session storage
-
-    this.router.navigate(['/home']);  // Redirect to landing page
-  }  
+    localStorage.clear();
+    sessionStorage.clear();
+    this.router.navigate(['/home']);
+  }
 }

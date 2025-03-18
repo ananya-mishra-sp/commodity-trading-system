@@ -50,5 +50,17 @@ export class AdminService {
   deleteUser(id: number) {
     return this.http.delete(`${this.apiUrl}/users/${id}`, { responseType: 'text' });
   }
+
+  getAllCommodities(): Observable<any[]> {
+    return this.http.get<any>(`${this.apiUrl}/commodities`, {
+      params: { page: '0', size: '1000', sortBy: 'name', order: 'asc' }
+    }).pipe(map(response => response.content));
+  }
+  
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any>(`${this.apiUrl}/users`, {
+      params: { page: '0', size: '1000', sortBy: 'name', order: 'asc' }
+    }).pipe(map(response => response.content));
+  }  
   
 }

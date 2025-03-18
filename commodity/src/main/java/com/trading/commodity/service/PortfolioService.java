@@ -21,6 +21,7 @@ public class PortfolioService {
     private final TransactionRepository transactionRepository;
     private  final UserRepository userRepository;
     private final CommodityRepository commodityRepository;
+    BigDecimal profitLoss;
 
     public PortfolioService(PortfolioRepository portfolioRepository, TransactionRepository transactionRepository, UserRepository userRepository, CommodityRepository commodityRepository) {
         this.portfolioRepository = portfolioRepository;
@@ -43,17 +44,21 @@ public class PortfolioService {
                 totalCost = totalCost.add(tx.getQuantity().multiply(tx.getTradePrice()));
             } else if ("Sell".equalsIgnoreCase(tx.getTradeType())) {
                 totalQuantity = totalQuantity.subtract(tx.getQuantity());
+//                totalCost = totalCost.subtract(tx.getQuantity().multiply(tx.getTradePrice()));
             }
         }
 
         // If total quantity is zero, remove portfolio entry
-        if (totalQuantity.compareTo(BigDecimal.ZERO) <= 0) {
-            portfolioRepository.deleteByUserIdAndCommodityId(userId, commodityId);
+        if (totalQuantity.compareTo(BigDecimal.ZERO) == 0) {
+            Portfolio portfolio = new Portfolio();
+            portfolio.setTotalQuantity(BigDecimal.ZERO);
+            portfolio.setAvgBuyPrice(BigDecimal.ZERO);
+            portfolio.setPortfolioValue(BigDecimal.ZERO);
+            portfolio.setProfitLoss(BigDecimal.ZERO);
             return;
         }
 
-        BigDecimal avgBuyPrice = totalQuantity.compareTo(BigDecimal.ZERO) > 0 ?
-                totalCost.divide(totalQuantity, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO;
+        BigDecimal avgBuyPrice = totalCost.divide(totalQuantity);
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -63,8 +68,13 @@ public class PortfolioService {
                 .orElseThrow(() -> new RuntimeException("Commodity not found"));
         BigDecimal currentMarketPrice = commodity.getCurrentPrice();
         BigDecimal portfolioValue = totalQuantity.multiply(currentMarketPrice);
-        BigDecimal profitLoss = portfolioValue.subtract(totalCost);
-
+//        if ((portfolioValue.compareTo(BigDecimal.ZERO) < 0 && totalCost.compareTo(BigDecimal.ZERO) > 0) || (portfolioValue.compareTo(BigDecimal.ZERO) > 0 && totalCost.compareTo(BigDecimal.ZERO) < 0) ){
+//            profitLoss = portfolioValue.add(totalCost);
+//        }
+//        else {
+//            profitLoss = portfolioValue.subtract(totalCost);
+//        }
+        profitLoss = portfolioValue.subtract(totalCost);
         // Save/update the portfolio
         Portfolio portfolio = portfolioRepository.findByUserIdAndCommodityId(userId, commodityId)
                 .orElse(new Portfolio());
@@ -85,7 +95,4 @@ public class PortfolioService {
         return portfolioRepository.findByUserId(userId);
     }
 
-    public void deleteByUserIdAndCommodityId(Integer userId, Integer commodityId) {
-        portfolioRepository.deleteByUserIdAndCommodityId(userId, commodityId);
-    }
 }

@@ -1,39 +1,110 @@
-<div class="past-trades-container">
-  <h1>Past Trades</h1>
+<div class="trades-container">
+  <h2>Past Trades</h2>
 
-  <table mat-table [dataSource]="transactions" class="mat-elevation-z8">
-    
-    <ng-container matColumnDef="tradeDate">
-      <th mat-header-cell *matHeaderCellDef> Trade Date </th>
-      <td mat-cell *matCellDef="let trade"> {{ trade.tradeDate | date:'short' }} </td>
-    </ng-container>
+  <!-- Filter Panel -->
+  <mat-expansion-panel class="filter-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>filter_list</mat-icon> Trade Filters
+      </mat-panel-title>
+    </mat-expansion-panel-header>
 
-    <ng-container matColumnDef="commodity">
-      <th mat-header-cell *matHeaderCellDef> Commodity </th>
-      <td mat-cell *matCellDef="let trade"> {{ trade.commodity.name }} </td>
-    </ng-container>
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="filter-row">
+        <mat-form-field appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput [matDatepicker]="pickerFrom" formControlName="dateFrom">
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
 
-    <ng-container matColumnDef="tradeType">
-      <th mat-header-cell *matHeaderCellDef> Type </th>
-      <td mat-cell *matCellDef="let trade"> {{ trade.tradeType }} </td>
-    </ng-container>
+        <mat-form-field appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput [matDatepicker]="pickerTo" formControlName="dateTo">
+          <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
 
-    <ng-container matColumnDef="quantity">
-      <th mat-header-cell *matHeaderCellDef> Quantity </th>
-      <td mat-cell *matCellDef="let trade"> {{ trade.quantity }} </td>
-    </ng-container>
+        <mat-form-field appearance="outline">
+          <mat-label>Commodity</mat-label>
+          <mat-select formControlName="commodity">
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let commodity of commodities" [value]="commodity.id">
+              {{ commodity.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-    <ng-container matColumnDef="tradePrice">
-      <th mat-header-cell *matHeaderCellDef> Price </th>
-      <td mat-cell *matCellDef="let trade"> {{ trade.tradePrice | currency }} </td>
-    </ng-container>
+        <mat-form-field appearance="outline">
+          <mat-label>Trade Type</mat-label>
+          <mat-select formControlName="tradeType">
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let type of tradeTypes" [value]="type">
+              {{ type }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
-    <ng-container matColumnDef="totalValue">
-      <th mat-header-cell *matHeaderCellDef> Total </th>
-      <td mat-cell *matCellDef="let trade"> {{ trade.totalValue | currency }} </td>
-    </ng-container>
+      <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="applyFilters()">
+          <mat-icon>search</mat-icon> Apply Filters
+        </button>
+        <button mat-stroked-button (click)="resetFilters()">
+          <mat-icon>clear</mat-icon> Reset
+        </button>
+        <button mat-raised-button color="accent" (click)="exportToCsv()">
+          <mat-icon>download</mat-icon> Export CSV
+        </button>
+      </div>
+    </form>
+  </mat-expansion-panel>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+  <!-- Trades Table -->
+  <div class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="filteredTransactions" matSort class="trades-table">
+      <!-- Trade Date Column -->
+      <ng-container matColumnDef="tradeDate">
+        <th mat-header-cell *matHeaderCellDef > Trade Date </th>
+        <td mat-cell *matCellDef="let trade"> {{ trade.tradeDate | date:'short' }} </td>
+      </ng-container>
+
+      <!-- Commodity Column -->
+      <ng-container matColumnDef="commodity">
+        <th mat-header-cell *matHeaderCellDef > Commodity </th>
+        <td mat-cell *matCellDef="let trade"> {{ trade.commodity.name }} </td>
+      </ng-container>
+
+      <!-- Trade Type Column -->
+      <ng-container matColumnDef="tradeType">
+        <th mat-header-cell *matHeaderCellDef> Type </th>
+        <td mat-cell *matCellDef="let trade" [ngClass]="{'buy-type': trade.tradeType === 'BUY', 'sell-type': trade.tradeType === 'SELL'}"> 
+          {{ trade.tradeType }} 
+        </td>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef> Quantity </th>
+        <td mat-cell *matCellDef="let trade"> {{ trade.quantity }} </td>
+      </ng-container>
+
+      <!-- Price Column -->
+      <ng-container matColumnDef="tradePrice">
+        <th mat-header-cell *matHeaderCellDef > Price </th>
+        <td mat-cell *matCellDef="let trade"> {{ trade.tradePrice | currency }} </td>
+      </ng-container>
+
+      <!-- Total Value Column -->
+      <ng-container matColumnDef="totalValue">
+        <th mat-header-cell *matHeaderCellDef > Total </th>
+        <td mat-cell *matCellDef="let trade"> {{ trade.totalValue | currency }} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

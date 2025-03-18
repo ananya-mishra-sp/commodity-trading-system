@@ -269,7 +269,7 @@ button[color="primary"]:hover {
 
 /* Feature Cards */
 .feature-card {
-  background-color: #b04444;
+  background-color: #ba5454;
   padding: 20px;
   border-radius: 10px;
   margin: 10px;
@@ -282,11 +282,11 @@ button[color="primary"]:hover {
 }
 
 mat-card-title{
-  color: rgb(94, 2, 2);
+  color: rgb(125, 21, 21);
   font-weight: 700;
   padding-bottom: 20px;
 }
 
 mat-card-content{
-  color: black;
+  color: rgb(74, 44, 44);
 }

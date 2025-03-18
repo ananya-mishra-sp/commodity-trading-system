@@ -1,32 +1,122 @@
+/* General container styling */
 .reports-container {
   width: 90%;
-  margin: auto;
-  text-align: center;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #fff;
 }
 
-table {
+.reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.reports-header h2 {
+  color: #b6b5b5;
+  margin: 0;
+  font-size: 28px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.reports-header div {
+  display: flex;
+  gap: 10px;
+}
+
+/* Tab styling */
+.report-tabs {
+  background-color: #837e7e;
+  border-radius: 4px;
+  border: 1px solid #3a0000;
+}
+
+.tab-icon {
+  margin-right: 8px;
+}
+
+.tab-content {
+  padding: 20px;
+}
+
+/* Card header styling */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.card-header h3 {
+  color: #7b0404;
+  margin: 0;
+  font-size: 20px;
+}
+
+/* Table styling */
+.table-container {
+  overflow-x: auto;
+  background-color: #f9f3f3;
+  border-radius: 4px;
+  border: 1px solid #3a0000;
+  margin-bottom: 30px;
+}
+
+.portfolio-table, .risk-table {
   width: 100%;
-  margin: 20px 0;
+  background-color: rgb(207, 181, 185);
 }
 
-th {
-  background-color: maroon;
-  color: rgb(12, 12, 12);
-  text-align: left;
-  padding: 10px;
-}
-
-td {
-  padding: 10px;
-  text-align: left;
-}
-
+/* Profit/Loss styling */
 .profit {
-  color: green;
+  color: #4caf50;
   font-weight: bold;
 }
 
 .loss {
-  color: red;
+  color: #f44336;
   font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .reports-container {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .reports-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .reports-header div {
+    width: 100%;
+  }
+  
+  .reports-header div button {
+    flex: 1;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .card-header button {
+    width: 100%;
+  }
+}
+
+.card-header h3{
+  text-align: center;
+}
+
+.mat-mdc-table th{
+  background-color: maroon;
+  color: white;
 }

@@ -1,0 +1,225 @@
+/* General container styling */
+.trades-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    color: #fff;
+  }
+  
+  h2 {
+    color: #a5a2a2;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Filter panel styling */
+  .filter-panel {
+    background-color: #1a1a1a;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #3a0000;
+  }
+  
+  ::ng-deep .mat-expansion-panel-header {
+    background-color: #2a0000 !important;
+    color: #fff !important;
+  }
+  
+  ::ng-deep .mat-expansion-panel-body {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 16px;
+  }
+  
+  .filter-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .filter-row mat-form-field {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  /* Custom form field styling */
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #7a0000;
+  }
+  
+  ::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: #a30000;
+  }
+  
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+    color: #ccc;
+  }
+  
+  ::ng-deep .mat-select-value, ::ng-deep .mat-select-arrow {
+    color: #fff;
+  }
+  
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
+    padding: 0.5em 0;
+  }
+  
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
+    padding: 0 0.75em;
+  }
+  
+  /* Filter action buttons */
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  ::ng-deep .mat-raised-button.mat-primary {
+    background-color: #7a0000;
+    color: white;
+  }
+  
+  ::ng-deep .mat-raised-button.mat-accent {
+    background-color: #a30000;
+    color: white;
+  }
+  
+  ::ng-deep .mat-stroked-button {
+    border-color: #7a0000;
+    color: #fff;
+  }
+  
+  /* Table styling */
+  .table-container {
+    overflow-x: auto;
+    background-color: #f8f5f5;
+    border-radius: 4px;
+    border: 1px solid #3a0000;
+  }
+  
+  .trades-table {
+    width: 100%;
+    background-color: rgb(188, 142, 149);
+  }
+  
+  ::ng-deep .mat-header-cell {
+    background-color: #7a0000;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  ::ng-deep .mat-cell {
+    color: #fff;
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #333;
+  }
+  
+  ::ng-deep .mat-row:hover {
+    background-color: #2a0000;
+  }
+  
+  /* Trade type styling */
+  .buy-type {
+    color: #4caf50;
+    font-weight: bold;
+  }
+  
+  .sell-type {
+    color: #f44336;
+    font-weight: bold;
+  }
+  
+  /* Paginator styling */
+  ::ng-deep .mat-paginator {
+    background-color: #1a1a1a;
+    color: #fff;
+    border-top: 1px solid #3a0000;
+  }
+  
+  ::ng-deep .mat-paginator-icon {
+    color: #ccc;
+  }
+  
+  ::ng-deep .mat-paginator-range-label {
+    color: #ccc;
+  }
+  
+  ::ng-deep .mat-paginator-page-size-label {
+    color: #ccc;
+  }
+  
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .filter-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .filter-row mat-form-field {
+      width: 100%;
+    }
+    
+    .filter-actions {
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .filter-actions button {
+      width: 100%;
+    }
+  }
+  .mat-expansion-panel-header-title {
+    color: #f5f2f2;
+  }
+  mat-label{
+    color: white;
+  }
+
+  .mat-mdc-select{
+    color: white;
+  }
+
+  .mat-mdc-raised-button:not(:disabled) {
+    color: #090909;
+    background-color: var(--mdc-protected-button-container-color, var(--mat-sys-surface));
+  }
+
+  .mat-mdc-outlined-button:not(:disabled) {
+    color: #f8f4f6;
+    border-color: var(--mdc-outlined-button-outline-color, var(--mat-sys-outline));
+  }
+  .filter-form{
+    display: flex;
+    padding-top: 30px;
+    flex-direction: column;
+  }
+
+  
+  .mat-mdc-header-row {
+    color: white;
+    background-color: #750404;
+ }
+
+ .mat-mdc-paginator{
+    background-color: #8b2323;
+ }
+
+ .mat-expansion-panel-header {
+    background-color: #740404 !important;
+    color: #fff !important;
+}

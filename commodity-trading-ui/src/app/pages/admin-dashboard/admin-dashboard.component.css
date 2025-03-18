@@ -1,15 +1,15 @@
-/* 🌟 Admin Dashboard Styles */
+/* Admin Dashboard Styles */
 .admin-dashboard {
   padding: 20px;
   font-family: 'Arial', sans-serif;
 }
 
-/* 🌟 Navbar */
+/* Navbar */
 .admin-navbar {
   display: flex;
   justify-content: space-between;
   background: rgb(125, 124, 124);
-  padding: 15px;
+  padding: 8px;
   color: white;
   align-items: center;
 }
@@ -33,30 +33,35 @@
   background-color: #a12a2a;
 }
 
-/* 🌟 Welcome Message */
+/* Welcome Message */
 .welcome-message {
-  font-size: 1.5em;
+  font-size: 35px;
   color: rgb(157, 47, 47);
   margin-top: 20px;
 }
 
-/* 🌟 Table Styling */
+h3{
+  color: gray;
+  font-size: 25px;
+}
+
+/* Table Styling */
 table {
   width: 100%;
   margin-top: 10px;
   border-collapse: collapse;
 }
 
-/* 🌟 Table Header */
+/* Table Header */
 .mat-mdc-table th {
   background-color: #8B0000 !important; /* Dark Red */
   color: white !important;
   font-weight: bold;
-  text-align: left;
+  text-align:left;
   padding: 10px;
 }
 
-/* 🌟 Table Rows */
+/* Table Rows */
 .mat-mdc-table tr:nth-child(odd) {
   background-color: #FFE6E6; /* Light Pink */
 }
@@ -65,7 +70,7 @@ table {
   background-color: #FFF5F5; /* Off White */
 }
 
-/* 🌟 Action Column */
+/* Action Column */
 .action-btn {
   color: white !important;
   background-color: #D32F2F !important; /* Danger Red */
@@ -77,7 +82,7 @@ table {
   background-color: #b71c1c !important;
 }
 
-/* 🌟 Pagination */
+/* Pagination */
 .mat-mdc-paginator {
   background-color: #8B0000 !important; /* Dark Red */
   color: white !important;
@@ -98,5 +103,63 @@ table {
 /* Ensure all buttons have white text */
 button.mat-mdc-button, button.mat-mdc-raised-button, button.mat-mdc-icon-button {
   color: white !important;
+  margin-bottom: 10px !important;
 }
 
+/* Add these styles to your admin-dashboard.component.css file */
+
+/* Search Container Styles */
+.search-container {
+  margin-bottom: 2px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-container mat-form-field {
+  width: 100%;
+}
+
+/* Actions Row Styles - Flex layout for search and upload buttons */
+.actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-right: 40px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  padding: 32px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .actions-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .search-container, .file-upload {
+    width: 100%;
+  }
+}
+
+mat-label{
+  color: white;
+}
+
+.mat-mdc-form-field.mat-form-field-animations-enabled .mdc-text-field__input{
+  color: white;
+}

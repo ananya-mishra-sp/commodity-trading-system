@@ -1,6 +1,6 @@
 /* Define global theme colors */
 :root {
-    --primary-color: black;
+    --primary-color: rgb(13, 13, 13);
     --secondary-color: red;
     --text-color: white;
     --card-bg: #121212; /* Darker shade for contrast */
