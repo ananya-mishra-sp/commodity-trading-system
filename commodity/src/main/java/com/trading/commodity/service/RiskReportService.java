@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 @Service
 public class RiskReportService {
@@ -28,45 +30,57 @@ public class RiskReportService {
 
     @Transactional
     public void updateRiskReport(Integer userId, Integer commodityId) {
-        // Fetch all past transactions for the user-commodity pair
         List<Transaction> transactions = transactionRepository.findByUserIdAndCommodityId(userId, commodityId);
 
         if (transactions.size() < 2) {
-            return; // Need at least 2 transactions to calculate volatility
+            return; // Need at least 2 transactions for volatility calculation
         }
 
-        // Fetch User and Commodity from database
+        // Fetch User and Commodity
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Commodity commodity = commodityRepository.findById(commodityId)
                 .orElseThrow(() -> new RuntimeException("Commodity not found"));
 
-        // Calculate mean trade price
-        BigDecimal mean = transactions.stream()
-                .map(Transaction::getTradePrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(transactions.size()));
+        // Compute log returns (ln(P2 / P1)) instead of raw price differences
+        BigDecimal sumLogReturns = BigDecimal.ZERO;
+        BigDecimal squaredSum = BigDecimal.ZERO;
+
+        for (int i = 1; i < transactions.size(); i++) {
+            BigDecimal prevPrice = transactions.get(i - 1).getTradePrice();
+            BigDecimal currPrice = transactions.get(i).getTradePrice();
+
+            if (prevPrice.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal logReturn = BigDecimal.valueOf(Math.log(currPrice.divide(prevPrice, MathContext.DECIMAL64).doubleValue()));
+                sumLogReturns = sumLogReturns.add(logReturn);
+                squaredSum = squaredSum.add(logReturn.pow(2));
+            }
+        }
+
+        int n = transactions.size() - 1;
+        if (n < 1) return; // Avoid division by zero
+
+        // Calculate mean of log returns
+        BigDecimal meanLogReturn = sumLogReturns.divide(BigDecimal.valueOf(n), RoundingMode.HALF_UP);
 
         // Calculate variance
-        BigDecimal variance = transactions.stream()
-                .map(t -> t.getTradePrice().subtract(mean).pow(2))
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(transactions.size() - 1));
+        BigDecimal variance = squaredSum.divide(BigDecimal.valueOf(n), RoundingMode.HALF_UP)
+                .subtract(meanLogReturn.pow(2));
 
+        // Volatility is the standard deviation
         BigDecimal volatility = BigDecimal.valueOf(Math.sqrt(variance.doubleValue()));
 
-        // Get current portfolio value
+        // Get Portfolio Value
         Optional<Portfolio> portfolioOpt = portfolioRepository.findByUserIdAndCommodityId(userId, commodityId);
-        if (portfolioOpt.isEmpty()) {
-            return;
-        }
+        if (portfolioOpt.isEmpty()) return;
+
         BigDecimal portfolioValue = portfolioOpt.get().getPortfolioValue();
 
-        // Calculate VaR (95% confidence level)
+        // Calculate VaR at 95% confidence level
         BigDecimal var95 = portfolioValue.multiply(volatility).multiply(BigDecimal.valueOf(1.645));
 
-        // Save or update the risk report
+        // Save or Update the Risk Report
         RiskReport riskReport = riskReportRepository.findByUserIdAndCommodityId(userId, commodityId)
                 .orElse(new RiskReport());
 

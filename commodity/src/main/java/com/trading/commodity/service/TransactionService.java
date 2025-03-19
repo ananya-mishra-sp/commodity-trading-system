@@ -44,6 +44,17 @@ public class TransactionService {
         Commodity commodity = commodityRepository.findById(commodityId)
                 .orElseThrow(() -> new RuntimeException("Commodity not found"));
 
+        // Check portfolio balance for SELL transactions
+        if (tradeType.equalsIgnoreCase("Sell")) {
+            Optional<BigDecimal> totalOwnedQuantityOpt = portfolioService.getTotalQuantity(userId, commodityId);
+            BigDecimal totalOwnedQuantity = totalOwnedQuantityOpt.orElse(BigDecimal.ZERO);
+
+            // Ensure user is not selling more than they own
+            if (quantity.compareTo(totalOwnedQuantity) > 0) {
+                throw new RuntimeException("Quantity not sufficient for sale. You own: " + totalOwnedQuantity);
+            }
+        }
+
         // Create a new Transaction
         Transaction transaction = new Transaction();
         transaction.setUser(user);
