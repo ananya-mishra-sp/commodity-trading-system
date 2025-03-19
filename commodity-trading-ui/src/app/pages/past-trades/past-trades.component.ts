@@ -138,21 +138,21 @@ export class PastTradesComponent implements OnInit {
         return false;
       }
 
-      // Price range filter
-      if ((filters.minPrice ?? 0) > trade.tradePrice) {
-        return false;
-      }
-      if ((filters.maxPrice ?? Infinity) < trade.tradePrice) {
-        return false;
-      }
+      // // Price range filter
+      // if ((filters.minPrice ?? 0) > trade.tradePrice) {
+      //   return false;
+      // }
+      // if ((filters.maxPrice ?? Infinity) < trade.tradePrice) {
+      //   return false;
+      // }
 
-      // Quantity range filter
-      if ((filters.minQuantity ?? 0) > trade.quantity) {
-        return false;
-      }
-      if ((filters.maxQuantity ?? Infinity) < trade.quantity) {
-        return false;
-      }
+      // // Quantity range filter
+      // if ((filters.minQuantity ?? 0) > trade.quantity) {
+      //   return false;
+      // }
+      // if ((filters.maxQuantity ?? Infinity) < trade.quantity) {
+      //   return false;
+      // }
 
       return true;
     });

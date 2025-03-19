@@ -10,7 +10,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // ✅ Fetch commodities from backend
+  // Fetch commodities from backend
   getCommodities(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }

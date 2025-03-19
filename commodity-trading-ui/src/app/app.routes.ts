@@ -20,7 +20,7 @@ export const routes: Routes = [
   {
     path: 'admin-dashboard',
     component: AdminDashboardComponent,
-    canActivate: [AdminAuthGuard], // ✅ Protects the admin route
+    canActivate: [AdminAuthGuard], // Protects the admin route
   }, // Admin Dashboard
   { path: '**', redirectTo: '/', pathMatch: 'full' } // Redirect unknown routes to home
 ];

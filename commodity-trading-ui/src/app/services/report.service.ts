@@ -34,16 +34,16 @@ export class ReportService {
   /**
    * Generate a new report for the user
    */
-  generateNewReport(userId: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/reports/generate/${userId}`, {});
-  }
+  // generateNewReport(userId: number): Observable<any> {
+  //   return this.http.post<any>(`${this.apiUrl}/reports/generate/${userId}`, {});
+  // }
 
   /**
    * Download a report file from S3
    */
-  downloadReportFile(s3Key: string): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/reports/download/${s3Key}`, {
-      responseType: 'blob'
-    });
-  }
+  // downloadReportFile(s3Key: string): Observable<Blob> {
+  //   return this.http.get(`${this.apiUrl}/reports/download/${s3Key}`, {
+  //     responseType: 'blob'
+  //   });
+  // }
 }
