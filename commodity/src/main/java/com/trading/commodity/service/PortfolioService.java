@@ -22,7 +22,6 @@ public class PortfolioService {
     private final TransactionRepository transactionRepository;
     private  final UserRepository userRepository;
     private final CommodityRepository commodityRepository;
-    BigDecimal profitLoss;
 
     public PortfolioService(PortfolioRepository portfolioRepository, TransactionRepository transactionRepository, UserRepository userRepository, CommodityRepository commodityRepository) {
         this.portfolioRepository = portfolioRepository;

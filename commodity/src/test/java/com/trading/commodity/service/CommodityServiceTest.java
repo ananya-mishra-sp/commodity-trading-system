@@ -2,97 +2,81 @@ package com.trading.commodity.service;
 
 import com.trading.commodity.model.Commodity;
 import com.trading.commodity.repository.CommodityRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Example;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
-@Transactional  // Ensures test data is rolled back after each test
-public class CommodityServiceTest {
+@ExtendWith(MockitoExtension.class)
+class CommodityServiceTest {
 
-    @Autowired
-    private CommodityService commodityService;
-
-    @Autowired
+    @Mock
     private CommodityRepository commodityRepository;
 
-    private Commodity testCommodity;
+    @InjectMocks
+    private CommodityService commodityService;
 
-    @Before
-    public void setUp() {
-        commodityRepository.deleteAll(); // Clean database before tests
+    private Commodity commodity;
 
-        // Insert test data
-        testCommodity = new Commodity();
-        testCommodity.setName("Gold");
-        testCommodity.setUnit("kg");
-        testCommodity.setCurrentPrice(new BigDecimal("1800.50"));
-        commodityRepository.save(testCommodity);
-    }
-
-    @After
-    public void tearDown() {
-        commodityRepository.deleteAll(); // Clean database after tests
+    @BeforeEach
+    void setUp() {
+        commodity = new Commodity();
+        commodity.setId(1);
+        commodity.setName("Gold");
+        commodity.setUnit("kg");
+        commodity.setCurrentPrice(new BigDecimal("1800.50"));
     }
 
     @Test
-    public void testGetAllCommodities() {
+    void testGetAllCommodities() {
+        when(commodityRepository.findAll((Example<Commodity>) Mockito.any())).thenReturn(Arrays.asList(commodity));
         List<Commodity> commodities = commodityService.getAllCommodities("name", "asc");
         assertFalse(commodities.isEmpty());
+        assertEquals(1, commodities.size());
         assertEquals("Gold", commodities.get(0).getName());
     }
 
     @Test
-    public void testGetCommodityById() {
-        Optional<Commodity> foundCommodity = commodityService.getCommodityById(testCommodity.getId());
+    void testGetCommodityById() {
+        when(commodityRepository.findById(1)).thenReturn(Optional.of(commodity));
+        Optional<Commodity> foundCommodity = commodityService.getCommodityById(1);
         assertTrue(foundCommodity.isPresent());
         assertEquals("Gold", foundCommodity.get().getName());
     }
 
     @Test
-    public void testCreateCommodity() {
-        Commodity silver = new Commodity();
-        silver.setName("Silver");
-        silver.setUnit("kg");
-        silver.setCurrentPrice(new BigDecimal("25.30"));
-
-        Commodity savedCommodity = commodityService.createCommodity(silver);
-
-        assertNotNull(savedCommodity);
-        assertEquals("Silver", savedCommodity.getName());
+    void testCreateCommodity() {
+        when(commodityRepository.save(commodity)).thenReturn(commodity);
+        Commodity createdCommodity = commodityService.createCommodity(commodity);
+        assertNotNull(createdCommodity);
+        assertEquals("Gold", createdCommodity.getName());
     }
 
     @Test
-    public void testUpdateCommodity() {
-        Commodity updateDetails = new Commodity();
-        updateDetails.setName("Gold");
-        updateDetails.setUnit("gram");
-        updateDetails.setCurrentPrice(new BigDecimal("60.00"));
-
-        Commodity updatedCommodity = commodityService.updateCommodity(testCommodity.getId(), updateDetails);
-
-        assertEquals("gram", updatedCommodity.getUnit());
-        assertEquals(new BigDecimal("60.00"), updatedCommodity.getCurrentPrice());
+    void testDeleteCommodity() {
+        doNothing().when(commodityRepository).deleteById(1);
+        commodityService.deleteCommodity(1);
+        verify(commodityRepository, times(1)).deleteById(1);
     }
 
     @Test
-    public void testDeleteCommodity() {
-        commodityService.deleteCommodity(testCommodity.getId());
-        Optional<Commodity> deletedCommodity = commodityRepository.findById(testCommodity.getId());
-        assertFalse(deletedCommodity.isPresent());
+    void testProcessCSV() {
+        MultipartFile file = mock(MultipartFile.class);
+        when(commodityRepository.findByName("Gold")).thenReturn(Optional.of(commodity));
+        doNothing().when(commodityRepository).saveAll(any());
+        assertDoesNotThrow(() -> commodityService.processCSV(file));
     }
 }

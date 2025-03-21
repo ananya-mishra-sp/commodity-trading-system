@@ -6,10 +6,12 @@ import { PastTradesComponent } from './pages/past-trades/past-trades.component';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { AdminAuthGuard } from './guards/admin-auth.guard';
+import { UserAuthGuard } from './guards/user-auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'user-dashboard', component: UserDashboardComponent,
+    canActivate: [UserAuthGuard],
     children: [
       { path: 'trade-commodities', component: TradeCommoditiesComponent },
       { path: 'past-trades', component: PastTradesComponent },

@@ -1,0 +1,72 @@
+<h2 mat-dialog-title>Add New User</h2>
+<div mat-dialog-content>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Full Name</mat-label>
+      <input matInput formControlName="name" placeholder="Enter full name">
+      <mat-error *ngIf="userForm.controls['name'].hasError('required')">
+        Name is required
+      </mat-error>
+      <mat-error *ngIf="userForm.controls['name'].hasError('maxlength')">
+        Name cannot exceed 100 characters
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" placeholder="Choose a username">
+      <mat-error *ngIf="userForm.controls['username'].hasError('required')">
+        Username is required
+      </mat-error>
+      <mat-error *ngIf="userForm.controls['username'].hasError('pattern')">
+        Username must be 3-30 characters and can contain letters, numbers, underscores, and hyphens
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="Enter email address" type="email">
+      <mat-error *ngIf="userForm.controls['email'].hasError('required')">
+        Email is required
+      </mat-error>
+      <mat-error *ngIf="userForm.controls['email'].hasError('email')">
+        Please enter a valid email address
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+      <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+        <!-- <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon> -->
+      </button>
+      <mat-error *ngIf="userForm.controls['password'].invalid">
+        {{getPasswordErrorMessage()}}
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Confirm Password</mat-label>
+      <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword">
+      <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
+        <!-- <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon> -->
+      </button>
+      <mat-error *ngIf="userForm.hasError('passwordMismatch')">
+        Passwords do not match
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading" class="cancel-btn">Cancel</button>
+  <button 
+    mat-flat-button 
+    color="primary" 
+    (click)="onSubmit()" 
+    [disabled]="userForm.invalid || loading"
+    class="submit-btn">
+    <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+    <span *ngIf="!loading">Add User</span>
+  </button>
+</div>

@@ -11,5 +11,4 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {
     Optional<Portfolio> findByUserIdAndCommodityId(Integer userId, Integer commodityId);
 
     List<Portfolio> findByUserId(Integer userId);
-    void deleteByUserIdAndCommodityId(Integer userId, Integer commodityId);
 }

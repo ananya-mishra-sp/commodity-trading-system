@@ -13,9 +13,9 @@ export class CommodityService {
   getCommodities(sortBy: string = 'name', order: string = 'asc'): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}?sortBy=${sortBy}&order=${order}`);
   }
-  searchCommodities(query: string): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/search?query=${query}`);
-  }
+  // searchCommodities(query: string): Observable<string[]> {
+  //   return this.http.get<string[]>(`${this.apiUrl}/search?query=${query}`);
+  // }
 
   getCommodityByName(name: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/by-name?name=${name}`);

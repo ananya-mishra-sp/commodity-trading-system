@@ -26,21 +26,8 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User createUser(User user) {
-        return userRepository.save(user);
-    }
-
-    public User updateUser(Integer id, User userDetails) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setName(userDetails.getName());
-                    user.setUsername(userDetails.getUsername());
-                    user.setEmail(userDetails.getEmail());
-                    user.setRole(userDetails.getRole());
-                    return userRepository.save(user);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
-    }
+//    public User createUser(User user) {}
+//    User Created through AuthService
 
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);

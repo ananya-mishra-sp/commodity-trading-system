@@ -1,34 +1,20 @@
-<table mat-table [dataSource]="commodities" class="mat-elevation-z8">
- 
-  <!-- Column: Name -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Name </th>
-    <td mat-cell *matCellDef="let commodity"> {{ commodity.name }} </td>
-  </ng-container>
-
-  <!-- Column: Unit -->
-  <ng-container matColumnDef="unit">
-    <th mat-header-cell *matHeaderCellDef> Unit </th>
-    <td mat-cell *matCellDef="let commodity"> {{ commodity.unit }} </td>
-  </ng-container>
-
-  <!-- Column: Current Price -->
-  <ng-container matColumnDef="currentPrice">
-    <th mat-header-cell *matHeaderCellDef> Current Price </th>
-    <td mat-cell *matCellDef="let commodity"> {{ commodity.currentPrice | currency }} </td>
-  </ng-container>
-
-  <!-- Column: Trade Button -->
-  <ng-container matColumnDef="trade">
-    <th mat-header-cell *matHeaderCellDef> Trade </th>
-    <td mat-cell *matCellDef="let commodity">
-      <button mat-raised-button color="warn" (click)="trade.emit(commodity)">Trade</button>
-    </td>
-  </ng-container>
-
-  <!-- Header Row -->
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-
-  <!-- Data Rows -->
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+<div class="commodity-grid">
+  <div *ngFor="let commodity of commodities" class="commodity-card">
+    <div class="commodity-info">
+      <h3>{{commodity.name}}</h3>
+      <div class="commodity-details">
+        <div class="price-tag">
+          <span class="price-label">Current Price:</span>
+          <span class="price-value">{{commodity.currentPrice | currency}}</span>
+        </div>
+        <div class="unit-tag">
+          <span class="unit-label">Unit:</span>
+          <span class="unit-value">{{commodity.unit}}</span>
+        </div>
+      </div>
+      <button mat-raised-button color="primary" class="trade-btn" (click)="onTrade(commodity)">
+        Trade Now
+      </button>
+    </div>
+  </div>
+</div>

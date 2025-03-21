@@ -41,8 +41,8 @@ export class TradeCommoditiesComponent implements OnInit {
   searchQuery: string = '';
   
   // Pagination settings
-  pageSize: number = 5;
-  pageSizeOptions: number[] = [5, 10, 15, 20];
+  pageSize: number = 12;
+  pageSizeOptions: number[] = [12, 20, 30];
   pageIndex: number = 0;
   totalItems: number = 0;
 
@@ -88,7 +88,7 @@ export class TradeCommoditiesComponent implements OnInit {
     } else {
       const query = this.searchQuery.toLowerCase().trim();
       this.filteredCommodities = this.commoditiesList.filter(commodity => 
-        commodity.name.toLowerCase().includes(query)
+        commodity.name.toLowerCase().startsWith(query) // Ensures it starts with query
       );
     }
     

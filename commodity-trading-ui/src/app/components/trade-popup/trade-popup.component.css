@@ -1,36 +1,403 @@
-.trade-popup {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
-    color: black;
-  }
-
-h2{
-    padding-left: 15px;
-    color: rgb(174, 5, 5);
+/* Dialog styling */
+.dialog-title {
+  margin: 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #2b5876, #4e4376);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 500;
+  border-radius: 8px 8px 0 0;
 }
 
-.full-width {
-  width: 100%;
-  margin-bottom: 16px;
+.trade-popup-content {
+  padding: 1.5rem;
 }
 
-.total-price {
-  font-size: 18px;
-  font-weight: bold;
-  color: #040404;
-  text-align: left;
-  margin-top: 10px;
+/* Commodity details styling */
+.commodity-details {
+  display: flex;
+  align-items: center;
+  background-color: #f5f7fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
 }
 
-.spacer {
-  height: 10px;
+.commodity-icon {
+  background-color: #3f51b5;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
 }
 
-.button-group {
+.commodity-icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.commodity-info {
+  flex: 1;
+}
+
+.price-info, .unit-info {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.price-label, .unit-label {
+  font-weight: 500;
+  color: #333;
+}
+
+.price-value {
+  font-weight: 700;
+  color: #3f51b5;
+}
+
+.unit-value {
+  font-weight: 500;
+}
+
+/* Form styling */
+.full-width {
   width: 100%;
-  margin-top: 20px;
+  margin-bottom: 1rem;
+}
+
+/* Total price styling */
+.total-price-container {
+  margin: 1.5rem 0;
+}
+
+.total-price-box {
+  background-color: #f5f7fa;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #3f51b5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-price-label {
+  font-weight: 500;
+  color: #333;
+}
+
+.total-price-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3f51b5;
+}
+
+/* Action buttons */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem 1.5rem;
+  gap: 1rem;
+}
+
+.cancel-btn {
+  color: #555;
+  border-color: #ddd;
+}
+
+.confirm-btn {
+  background-color: #3f51b5;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .commodity-details {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .commodity-icon {
+    margin: 0 0 1rem 0;
+  }
+  
+  .price-info, .unit-info {
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .cancel-btn, .confirm-btn {
+    width: 100%;
+  }
+}
+
+/*  */
+
+/* Dialog styling */
+.dialog-title {
+  margin: 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #2b5876, #4e4376);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 500;
+  border-radius: 8px 8px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10; /* Ensure title stays on top when scrolling */
+}
+
+.mat-dialog-container {
+  overflow: hidden !important;
+  border-radius: 8px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.trade-popup-content {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(80vh - 130px); /* Adjusted to account for header and footer */
+  scrollbar-width: thin;
+  scrollbar-color: #344976 rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar styling */
+.trade-popup-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.trade-popup-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.trade-popup-content::-webkit-scrollbar-thumb {
+  background-color: #2564eb;
+  border-radius: 10px;
+}
+
+/* Commodity details styling */
+.commodity-details {
+  display: flex;
+  align-items: center;
+  background-color: #f1f5f9;
+  padding: 1.25rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(203, 213, 225, 0.3);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04);
+}
+
+.commodity-icon {
+  background-color: #2564eb;
+  color: white;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.25rem;
+  box-shadow: 0 4px 8px rgba(37, 100, 235, 0.2);
+}
+
+.commodity-icon mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.commodity-info {
+  flex: 1;
+}
+
+.price-info, .unit-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.price-label, .unit-label {
+  font-weight: 500;
+  color: #334155;
+}
+
+.price-value {
+  font-weight: 700;
+  color: #2564eb;
+  font-size: 1.15rem;
+}
+
+.unit-value {
+  font-weight: 500;
+  color: #0f172a;
+}
+
+/* Form styling */
+.full-width {
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(203, 213, 225, 0.5) !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #2564eb !important;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #2564eb !important;
+}
+
+::ng-deep .mat-input-element {
+  caret-color: #2564eb !important;
+}
+
+::ng-deep .mat-select-arrow {
+  color: #64748b !important;
+}
+
+::ng-deep .mat-form-field-hint-wrapper {
+  color: #64748b;
+}
+
+/* Total price styling */
+.total-price-container {
+  margin: 1.5rem 0;
+}
+
+.total-price-box {
+  background-color: #f1f5f9;
+  padding: 1.25rem;
+  border-radius: var(--border-radius);
+  border-left: 4px solid #2564eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04);
+}
+
+.total-price-label {
+  font-weight: 500;
+  color: #334155;
+}
+
+.total-price-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2564eb;
+}
+
+/* Action buttons */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem 1.5rem;
+  gap: 1rem;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  border-top: 1px solid rgba(203, 213, 225, 0.3);
+  z-index: 10;
+}
+
+.cancel-btn {
+  color: #334155;
+  border-color: #cbd5e1;
+  height: 44px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(203, 213, 225, 0.2);
+}
+
+.confirm-btn {
+  background-color: #2564eb;
+  color: white;
+  height: 44px;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.confirm-btn:hover:not([disabled]) {
+  background-color: #153ca8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 100, 235, 0.2);
+}
+
+.confirm-btn:disabled {
+  background-color: rgba(203, 213, 225, 0.5);
+  color: #64748b;
+}
+
+/* Trade type indicator */
+.trade-type-indicator {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.buy-indicator {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.sell-indicator {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .commodity-details {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .commodity-icon {
+    margin: 0 0 1rem 0;
+  }
+  
+  .price-info, .unit-info {
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
+  }
+  
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .cancel-btn, .confirm-btn {
+    width: 100%;
+  }
+  
+  .trade-popup-content {
+    max-height: calc(80vh - 180px); /* Adjust for stacked buttons */
+  }
 }

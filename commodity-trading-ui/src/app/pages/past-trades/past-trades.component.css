@@ -1,225 +1,323 @@
-/* General container styling */
+/* Past Trades Component Styles */
 .trades-container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-    color: #fff;
-  }
-  
-  h2 {
-    color: #a5a2a2;
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 28px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Filter panel styling */
-  .filter-panel {
-    background-color: #1a1a1a;
-    margin-bottom: 20px;
-    border-radius: 4px;
-    border: 1px solid #3a0000;
-  }
-  
-  ::ng-deep .mat-expansion-panel-header {
-    background-color: #2a0000 !important;
-    color: #fff !important;
-  }
-  
-  ::ng-deep .mat-expansion-panel-body {
-    background-color: #1a1a1a;
-    color: #fff;
-    padding: 16px;
-  }
-  
-  .filter-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 2rem;
+  color: #3f51b5;
+  margin: 0;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0px;
+  height: 0px;
+  background-color: #3f51b5;
+}
+
+.mat-mdc-raised-button {
+  color: rgba(34, 34, 197, 0.842)
+}
+
+.mat-mdc-outlined-button {
+  color: rgba(34, 34, 197, 0.842)
+}
+
+.export-btn {
+  background-color: #3f51b5;
+  color: white;
+}
+
+/* Filter Section */
+.filter-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f5f7fa;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+}
+
+.filter-header mat-icon {
+  margin-right: 0.75rem;
+  color: #3f51b5;
+}
+
+.filter-header span {
+  font-size: 1.1rem;
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+.filter-toggle {
+  margin-left: auto;
+}
+
+.filter-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.filter-content.show-filters {
+  max-height: 600px; /* Adjust based on content */
+}
+
+.filter-form {
+  padding: 1.5rem;
+}
+
+.filter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.date-range-filters, .type-filters, .range-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.date-range-filters mat-form-field, 
+.type-filters mat-form-field {
+  flex: 1;
+  min-width: 180px;
+}
+
+.trade-type-toggle {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  flex: 1;
+}
+
+.trade-type-toggle label {
+  margin-bottom: 0.5rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.9rem;
+}
+
+.toggle-buttons {
+  display: flex;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.toggle-buttons button {
+  flex: 1;
+  border-radius: 0;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.87);
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 0.5rem 0;
+  transition: all 0.3s ease;
+}
+
+.toggle-buttons button:last-child {
+  border-right: none;
+}
+
+.toggle-buttons button.active {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.range-filter {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 200px;
+}
+
+.range-filter label {
+  margin-bottom: 0.5rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.9rem;
+}
+
+.slider-container {
+  padding: 0 0.5rem;
+}
+
+.range-values {
+  display: flex;
+  justify-content: space-around;
+  padding-right: 490px;
+  margin-top: 0.5rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Table Styles */
+.table-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f5f7fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.search-box {
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-box mat-form-field {
+  width: 100%;
+  margin-bottom: -1.25rem;
+}
+
+.table-actions {
+  min-width: 200px;
+}
+
+.table-actions mat-form-field {
+  width: 100%;
+  margin-bottom: -1.25rem;
+}
+
+.table-wrapper {
+  position: relative;
+  min-height: 300px;
+}
+
+.trades-table {
+  width: 100%;
+}
+
+.trades-table th {
+  background-color: #e5edf8;
+  color: rgba(0, 0, 0, 0.87);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.trades-table td {
+  padding: 0.75rem 1rem;
+}
+
+.trade-type-badge {
+  padding: 0px;
+  border-radius: 0px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-block;
+  text-align: left;
+  min-width: 80px;
+}
+
+.buy-type {
+  background-color: rgba(76, 175, 80, 0.12);
+  color: #2e7d32;
+}
+
+.sell-type {
+  background-color: rgba(63, 81, 181, 0.12);
+  color: #303f9f;
+}
+
+/* No data state */
+.no-data-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 2rem;
+}
+
+.no-data-container mat-icon {
+  font-size: 3rem;
+  height: 3rem;
+  width: 3rem;
+  color: rgba(0, 0, 0, 0.38);
+  margin-bottom: 1rem;
+}
+
+.no-data-container p {
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 1rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
   .filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 16px;
+    flex-direction: column;
+    gap: 1rem;
   }
   
-  .filter-row mat-form-field {
-    flex: 1;
-    min-width: 200px;
-  }
-  
-  /* Custom form field styling */
-  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
-    color: #7a0000;
-  }
-  
-  ::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
-    color: #a30000;
-  }
-  
-  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
-    color: #ccc;
-  }
-  
-  ::ng-deep .mat-select-value, ::ng-deep .mat-select-arrow {
-    color: #fff;
-  }
-  
-  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
-    padding: 0.5em 0;
-  }
-  
-  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
-    padding: 0 0.75em;
-  }
-  
-  /* Filter action buttons */
-  .filter-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  ::ng-deep .mat-raised-button.mat-primary {
-    background-color: #7a0000;
-    color: white;
-  }
-  
-  ::ng-deep .mat-raised-button.mat-accent {
-    background-color: #a30000;
-    color: white;
-  }
-  
-  ::ng-deep .mat-stroked-button {
-    border-color: #7a0000;
-    color: #fff;
-  }
-  
-  /* Table styling */
-  .table-container {
-    overflow-x: auto;
-    background-color: #f8f5f5;
-    border-radius: 4px;
-    border: 1px solid #3a0000;
-  }
-  
-  .trades-table {
-    width: 100%;
-    background-color: rgb(188, 142, 149);
-  }
-  
-  ::ng-deep .mat-header-cell {
-    background-color: #7a0000;
-    color: white;
-    font-weight: bold;
-    text-align: left;
-    padding: 12px;
-    font-size: 14px;
-  }
-  
-  ::ng-deep .mat-cell {
-    color: #fff;
-    padding: 12px;
-    font-size: 14px;
-    border-bottom: 1px solid #333;
-  }
-  
-  ::ng-deep .mat-row:hover {
-    background-color: #2a0000;
-  }
-  
-  /* Trade type styling */
-  .buy-type {
-    color: #4caf50;
-    font-weight: bold;
-  }
-  
-  .sell-type {
-    color: #f44336;
-    font-weight: bold;
-  }
-  
-  /* Paginator styling */
-  ::ng-deep .mat-paginator {
-    background-color: #1a1a1a;
-    color: #fff;
-    border-top: 1px solid #3a0000;
-  }
-  
-  ::ng-deep .mat-paginator-icon {
-    color: #ccc;
-  }
-  
-  ::ng-deep .mat-paginator-range-label {
-    color: #ccc;
-  }
-  
-  ::ng-deep .mat-paginator-page-size-label {
-    color: #ccc;
-  }
-  
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .filter-row {
-      flex-direction: column;
-      gap: 8px;
-    }
-    
-    .filter-row mat-form-field {
-      width: 100%;
-    }
-    
-    .filter-actions {
-      flex-direction: column;
-      gap: 8px;
-    }
-    
-    .filter-actions button {
-      width: 100%;
-    }
-  }
-  .mat-expansion-panel-header-title {
-    color: #f5f2f2;
-  }
-  mat-label{
-    color: white;
-  }
-
-  .mat-mdc-select{
-    color: white;
-  }
-
-  .mat-mdc-raised-button:not(:disabled) {
-    color: #090909;
-    background-color: var(--mdc-protected-button-container-color, var(--mat-sys-surface));
-  }
-
-  .mat-mdc-outlined-button:not(:disabled) {
-    color: #f8f4f6;
-    border-color: var(--mdc-outlined-button-outline-color, var(--mat-sys-outline));
-  }
-  .filter-form{
-    display: flex;
-    padding-top: 30px;
+  .date-range-filters, .type-filters {
     flex-direction: column;
   }
+}
 
+@media (max-width: 768px) {
+  .trades-container {
+    padding: 1rem;
+  }
   
-  .mat-mdc-header-row {
-    color: white;
-    background-color: #750404;
- }
+  .table-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .search-box {
+    max-width: none;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .export-btn {
+    align-self: flex-end;
+  }
+}
 
- .mat-mdc-paginator{
-    background-color: #8b2323;
- }
-
- .mat-expansion-panel-header {
-    background-color: #740404 !important;
-    color: #fff !important;
+#type-font{
+  font-size: smaller;
 }

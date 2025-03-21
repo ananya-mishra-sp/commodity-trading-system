@@ -1,7 +1,37 @@
-<h2 mat-dialog-title>Trade {{ data.commodity.name }}</h2>
+<h2 mat-dialog-title class="dialog-title">Trade {{ data.commodity.name }}</h2>
 
-<div class="trade-popup">
+<div mat-dialog-content class="trade-popup-content">
   <form [formGroup]="tradeForm">
+    <!-- Commodity Details -->
+    <div class="commodity-details">
+      <div class="commodity-icon">
+        <mat-icon>monetization_on</mat-icon>
+      </div>
+      <div class="commodity-info">
+        <div class="price-info">
+          <span class="price-label">Current Price:</span>
+          <span class="price-value">₹{{ data.commodity.currentPrice | number: '1.2-2' }}</span>
+        </div>
+        <div class="unit-info">
+          <span class="unit-label">Unit:</span>
+          <span class="unit-value">{{ data.commodity.unit }}</span>
+        </div>
+        <div class="trade-type-indicator" [ngClass]="{'buy-indicator': tradeForm.value.action === 'buy', 'sell-indicator': tradeForm.value.action === 'sell'}">
+          {{ tradeForm.value.action === 'buy' ? 'Buying' : 'Selling' }}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Action (Buy/Sell) -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Trade Type</mat-label>
+      <mat-select formControlName="action">
+        <mat-option value="buy">Buy</mat-option>
+        <mat-option value="sell">Sell</mat-option>
+      </mat-select>
+      <mat-hint>Select whether you want to buy or sell</mat-hint>
+    </mat-form-field>
+
     <!-- Quantity Field -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Quantity</mat-label>
@@ -12,34 +42,30 @@
         min="1"
         (input)="updateTotalPrice(tradeForm.value.quantity)"
       />
+      <mat-hint>Enter the quantity you wish to trade</mat-hint>
       <mat-error *ngIf="tradeForm.get('quantity')?.hasError('required')">Quantity is required.</mat-error>
       <mat-error *ngIf="tradeForm.get('quantity')?.hasError('min')">Must be at least 1.</mat-error>
     </mat-form-field>
-
-    <!-- Action (Buy/Sell) -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Trade Type</mat-label>
-      <mat-select formControlName="action">
-        <mat-option value="buy">Buy</mat-option>
-        <mat-option value="sell">Sell</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Spacing for aesthetics -->
-    <div class="spacer"></div>
-
-    <!-- Total Price Display Below Trade Type -->
-    <div class="total-price">
-      <strong>Total Price:</strong> ₹{{ totalPrice | number: '1.2-2' }}
+    
+    <!-- Total Price Display -->
+    <div class="total-price-container">
+      <div class="total-price-box">
+        <div class="total-price-label">Total Price:</div>
+        <div class="total-price-value">₹{{ totalPrice | number: '1.2-2' }}</div>
+      </div>
     </div>
-
-    <!-- Spacing for aesthetics -->
-    <div class="spacer"></div>
-
-    <!-- Buttons -->
-    <div class="button-group">
-      <button mat-raised-button color="warn" (click)="dialogRef.close()">Cancel</button>
-      <button mat-raised-button color="primary" [disabled]="!tradeForm.valid" (click)="submitTrade()">Confirm</button>
+    
+    <!-- Market Analysis (Optional) -->
+    <div class="market-analysis">
+      <h3>Market Summary</h3>
+      <p>This commodity has shown {{data.commodity.trend || 'stable'}} price movement recently. Trading volume is {{data.commodity.volume || 'moderate'}}.</p>
     </div>
   </form>
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button class="cancel-btn" (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button class="confirm-btn" [disabled]="!tradeForm.valid" (click)="submitTrade()">
+    Confirm {{ tradeForm.value.action === 'buy' ? 'Purchase' : 'Sale' }}
+  </button>
 </div>

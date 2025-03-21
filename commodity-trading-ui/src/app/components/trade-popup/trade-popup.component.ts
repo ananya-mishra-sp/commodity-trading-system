@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TransactionService } from '../../services/transaction.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-trade-popup',
@@ -21,7 +22,8 @@ import { AuthService } from '../../services/auth.service';
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatIcon
   ]
 })
 export class TradePopupComponent {

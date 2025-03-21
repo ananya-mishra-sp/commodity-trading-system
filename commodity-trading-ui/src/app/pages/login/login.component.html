@@ -1,37 +1,81 @@
-<div class="login-container">
-  <h2>Login</h2>
-
-<form [formGroup]="loginForm" (ngSubmit)="login()">
-  <mat-form-field appearance="outline">
-    <mat-label>Username</mat-label>
-    <input matInput formControlName="username" required />
-    <mat-error *ngIf="loginForm.controls['username'].invalid && loginForm.controls['username'].touched">
-      Username is required
-    </mat-error>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Password</mat-label>
-    <input matInput type="password" formControlName="password" required />
-    <mat-error *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched">
-      Password is required
-    </mat-error>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Role</mat-label>
-    <mat-select formControlName="role" required>
-      <mat-option value="USER">User</mat-option>
-      <mat-option value="ADMIN">Admin</mat-option>
-    </mat-select>
-    <mat-error *ngIf="loginForm.controls['role'].invalid && loginForm.controls['role'].touched">
-      Role is required
-    </mat-error>
-  </mat-form-field>
-
-  <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
-  <button mat-button color="warn" (click)="closeModal()">Cancel</button>
-
-  <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
-</form>
+<div class="login-wrapper">
+  <div class="login-container">
+    <div class="login-header">
+      <h2>Login to Your Account</h2>
+      <p class="login-subheading">Enter your credentials to access your dashboard</p>
+    </div>
+    
+    <div class="alert-container success-alert" *ngIf="showSuccessAlert">
+      <div class="alert-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <div class="alert-message">Login successful! Redirecting you to dashboard...</div>
+    </div>
+    
+    <div class="alert-container error-alert" *ngIf="errorMessage">
+      <div class="alert-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <div class="alert-message">{{ errorMessage }}</div>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" required />
+        <mat-icon matPrefix class="form-icon">person</mat-icon>
+        <mat-error *ngIf="loginForm.controls['username'].invalid && loginForm.controls['username'].touched">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
+        <mat-icon matPrefix class="form-icon">lock</mat-icon>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button" aria-label="Toggle password visibility">
+        </button>
+        <mat-error *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched">
+          Password is required
+        </mat-error>
+      </mat-form-field>
+      
+      <!-- <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role" required>
+          <mat-option value="User">User</mat-option>
+          <mat-option value="Admin">Admin</mat-option>
+        </mat-select>
+        <mat-icon matPrefix class="form-icon">assignment_ind</mat-icon>
+        <mat-error *ngIf="loginForm.controls['role'].invalid && loginForm.controls['role'].touched">
+          Please select a role
+        </mat-error>
+      </mat-form-field> -->
+      
+      <!-- <div class="remember-me">
+        <mat-checkbox formControlName="rememberMe" color="primary">Remember me</mat-checkbox>
+      </div> -->
+      
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="submit-button" [class.loading]="isLoading">
+          <span *ngIf="!isLoading">Login</span>
+          <span *ngIf="isLoading" class="spinner"></span>
+        </button>
+        <button mat-stroked-button type="button" (click)="closeModal()" class="cancel-button">
+          Cancel
+        </button>
+      </div>
+    </form>
+    
+    <div class="login-footer">
+      <p>Don't have an account? <a (click)="openRegisterDialog()" class="register-link">Register now</a></p>
+    </div>
+  </div>
 </div>

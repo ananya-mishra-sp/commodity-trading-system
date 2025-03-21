@@ -1,106 +1,190 @@
-<div class="admin-dashboard">
-  <!-- Navbar -->
-  <nav class="admin-navbar">
-    <span class="brand">Admin's Handle</span>
-    <div class="nav-links">
-      <button mat-button (click)="selectedTab='commodities'">Manage Commodities</button>
-      <button mat-button (click)="selectedTab='users'">Manage Users</button>
-      <button mat-button color="warn" (click)="logout()">Logout</button>
-    </div>
-  </nav>
+<div class="dashboard-container">
+  <app-admin-navbar 
+  [activeTab]="selectedTab" 
+  (tabChange)="changeTab($event)" 
+  (logoutRequest)="logout()">
+</app-admin-navbar>
+  
+  <div class="dashboard-content">
 
-  <h2 class="welcome-message">Welcome, Admin!</h2>
-
-  <!-- Commodities Section -->
-  <div *ngIf="selectedTab === 'commodities'">
-    <h3>Manage Commodities</h3>
-    <div class="actions-row">
-      <!-- Search Bar -->
-      <div class="search-container">
-        <mat-form-field appearance="outline" class="white-input">
-          <mat-label>Search commodities</mat-label>
-          <input matInput [(ngModel)]="commoditySearchTerm" (keyup.enter)="searchCommodities()" placeholder="Search by name, unit, ID or price">
-          <button *ngIf="commoditySearchTerm" matSuffix mat-icon-button (click)="clearCommoditySearch()" type="button">
-            <mat-icon>clear</mat-icon>
+    <!-- Commodities Section -->
+    <div class="section-container" *ngIf="selectedTab === 'commodities'">
+      <div class="section-header">
+        <h2>Manage Commodities</h2>
+        <div class="section-actions">
+          <button mat-flat-button class="action-button add-button" (click)="openAddCommodityDialog()">
+            <mat-icon>add</mat-icon>
+            <span>Add Commodity</span>
           </button>
-        </mat-form-field>
-        <button mat-raised-button color="primary" (click)="searchCommodities()">Search</button>
+          <div class="file-upload-container">
+            <input type="file" #fileInput (change)="uploadCSV($event)" accept=".csv" hidden />
+            <button mat-flat-button class="action-button add-button" (click)="fileInput.click()">
+              <mat-icon>upload_file</mat-icon>
+              <span>Upload CSV</span>
+            </button>
+          </div>
+        </div>
       </div>
-      <!-- Upload CSV -->
-      <div class="file-upload">
-        <input type="file" #fileInput (change)="uploadCSV($event)" accept=".csv" hidden>
-        <button mat-raised-button color="primary" (click)="fileInput.click()">Upload CSV</button>
-      </div>
-    </div>
-    <!-- Commodities Table -->
-    <table mat-table [dataSource]="paginatedCommodities" class="mat-elevation-z8">
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let commodity">{{ commodity.id }}</td>
-      </ng-container>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let commodity">{{ commodity.name }}</td>
-      </ng-container>
-      <ng-container matColumnDef="unit">
-        <th mat-header-cell *matHeaderCellDef>Unit</th>
-        <td mat-cell *matCellDef="let commodity">{{ commodity.unit }}</td>
-      </ng-container>
-      <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef>Current Price</th>
-        <td mat-cell *matCellDef="let commodity">${{ commodity.currentPrice }}</td>
-      </ng-container>
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>Action</th>
-        <td mat-cell *matCellDef="let commodity">
-          <button mat-raised-button color="warn" (click)="confirmDeleteCommodity(commodity.id, commodity.name)">Delete</button>
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="['id', 'name', 'unit', 'price', 'delete']"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['id', 'name', 'unit', 'price', 'delete']"></tr>
-    </table>
-    <mat-paginator [length]="totalCommodities" [pageSize]="pageSize" [pageIndex]="commodityPage" (page)="onCommodityPageChange($event)"></mat-paginator>
-  </div>
 
-  <!-- Users Section -->
-  <div *ngIf="selectedTab === 'users'">
-    <h3>Manage Users</h3>
-    <div class="search-container">
-      <mat-form-field appearance="outline" class="white-input">
-        <mat-label>Search users</mat-label>
-        <input matInput [(ngModel)]="userSearchTerm" (keyup.enter)="searchUsers()" placeholder="Search by name, username, email or ID">
-        <button *ngIf="userSearchTerm" matSuffix mat-icon-button (click)="clearUserSearch()" type="button">
-          <mat-icon>clear</mat-icon>
-        </button>
-      </mat-form-field>
-      <button mat-raised-button color="primary" (click)="searchUsers()">Search</button>
+      <!-- Search Bar -->
+      <!-- <div class="search-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Search commodities</mat-label>
+          <input matInput (keyup)="applyFilterCommodities($event)" placeholder="Search by name or unit">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div> -->
+
+      <!-- Loading Indicator -->
+      <!-- <div class="loading-spinner" *ngIf="loadCommodities">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div> -->
+
+      <!-- Commodities Table -->
+      <div class="table-container" >
+        <table mat-table [dataSource]="commoditiesDataSource" matSort (matSortChange)="onCommoditySortChange($event)" class="mat-elevation-z2">
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let commodity">{{ commodity.id }}</td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let commodity">{{ commodity.name }}</td>
+          </ng-container>
+
+          <!-- Unit Column -->
+          <ng-container matColumnDef="unit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Unit</th>
+            <td mat-cell *matCellDef="let commodity">{{ commodity.unit }}</td>
+          </ng-container>
+
+          <!-- Price Column -->
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="price">Current Price</th>
+            <td mat-cell *matCellDef="let commodity" class="price-cell">${{ commodity.currentPrice.toFixed(2) }}</td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let commodity">
+              <button mat-icon-button color="warn" matTooltip="Delete" (click)="confirmDeleteCommodity(commodity.id, commodity.name)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Header and Row Definitions -->
+          <tr mat-header-row *matHeaderRowDef="commodityColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: commodityColumns;"></tr>
+
+          <!-- No Data Row -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell no-data" colspan="5">No commodities found</td>
+          </tr>
+        </table>
+
+        <!-- Paginator -->
+        <!-- <mat-paginator 
+          #commodityPaginator
+          [length]="totalCommodities"
+          [pageSize]="commodityPageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [pageIndex]="commodityPageIndex"
+          (page)="onCommodityPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator> -->
+      </div>
     </div>
-    <table mat-table [dataSource]="paginatedUsers" class="mat-elevation-z8">
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let user">{{ user.id }}</td>
-      </ng-container>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let user">{{ user.name }}</td>
-      </ng-container>
-      <ng-container matColumnDef="username">
-        <th mat-header-cell *matHeaderCellDef>Username</th>
-        <td mat-cell *matCellDef="let user">{{ user.username }}</td>
-      </ng-container>
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let user">{{ user.email }}</td>
-      </ng-container>
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef>Action</th>
-        <td mat-cell *matCellDef="let user">
-          <button mat-raised-button color="warn" (click)="confirmDeleteUser(user.id, user.username)">Delete</button>
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="['id', 'name', 'username', 'email', 'delete']"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['id', 'name', 'username', 'email', 'delete']"></tr>
-    </table>
-    <mat-paginator [length]="totalUsers" [pageSize]="pageSize" [pageIndex]="userPage" (page)="onUserPageChange($event)"></mat-paginator>
+
+    <!-- Users Section -->
+    <div class="section-container" *ngIf="selectedTab === 'users'">
+      <div class="section-header">
+        <h2>Manage Users</h2>
+        <button mat-flat-button class="action-button add-button" (click)="openAddUserDialog()">
+          <mat-icon>person_add</mat-icon>
+          <span>Add User</span>
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <!-- <div class="search-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Search users</mat-label>
+          <input matInput (keyup)="applyFilterUsers()" placeholder="Search by name, username, email or ID">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div> -->
+
+      <!-- Loading Indicator
+      <div class="loading-spinner" *ngIf="loadUsers">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div> -->
+
+      <!-- Users Table -->
+      <div class="table-container" >
+        <table mat-table [dataSource]="usersDataSource" matSort (matSortChange)="onUserSortChange($event)" class="mat-elevation-z2">
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="id">ID</th>
+            <td mat-cell *matCellDef="let user">{{ user.id }}</td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="name">Name</th>
+            <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+          </ng-container>
+
+          <!-- Username Column -->
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="username">Username</th>
+            <td mat-cell *matCellDef="let user">{{ user.username }}</td>
+          </ng-container>
+
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+            <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let user">
+              <button mat-icon-button color="warn" matTooltip="Delete" (click)="confirmDeleteUser(user.id, user.username)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Header and Row Definitions -->
+          <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: userColumns;"></tr>
+
+          <!-- No Data Row -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell no-data" colspan="5">No users found</td>
+          </tr>
+        </table>
+
+        <!-- Paginator -->
+        <!-- <mat-paginator 
+          #userPaginator
+          [length]="totalUsers"
+          [pageSize]="userPageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [pageIndex]="userPageIndex"
+          (page)="onUserPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator> -->
+      </div>
+    </div>
+  </div>
+  <div class="site-footer">
+    <p>© 2025 Commodity Trading Platform. All rights reserved.</p>
   </div>
 </div>

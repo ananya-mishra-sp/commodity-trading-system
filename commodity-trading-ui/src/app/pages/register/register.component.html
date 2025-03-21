@@ -1,43 +1,117 @@
 <div class="register-container">
-  <h2>Register</h2>
-  <form [formGroup]="registerForm" (ngSubmit)="register()">
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Name</mat-label>
+  <div class="register-header">
+    <h2>Create an Account</h2>
+    <p class="register-subheading">Join our community and start trading commodities</p>
+  </div>
+  
+  <div class="progress-indicator" *ngIf="formSubmitting">
+    <div class="progress-bar-container">
+      <div class="progress-text">Creating your account...</div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="alert-container success-alert" *ngIf="registrationSuccess">
+    <div class="alert-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <div class="alert-message">Registration successful! You can now log in.</div>
+  </div>
+  
+  <div class="alert-container error-alert" *ngIf="errorMessage">
+    <div class="alert-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    <div class="alert-message">{{ errorMessage }}</div>
+  </div>
+  
+  <form [formGroup]="registerForm" (ngSubmit)="register()" class="register-form" *ngIf="!registrationSuccess">
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Full Name</mat-label>
       <input matInput formControlName="fullName" type="text" required />
-      <mat-error *ngIf="registerForm.get('fullName')?.invalid">Name is required</mat-error>
+      <mat-icon matPrefix class="form-icon">person</mat-icon>
+      <mat-error *ngIf="registerForm.get('fullName')?.invalid">Full name is required</mat-error>
     </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
+    
+    <mat-form-field appearance="outline" class="form-field">
       <mat-label>Username</mat-label>
       <input matInput formControlName="username" type="text" required (blur)="checkUsernameExists()" />
-      <mat-error *ngIf="registerForm.get('username')?.invalid">Username is required</mat-error>
+      <mat-icon matPrefix class="form-icon">account_circle</mat-icon>
+      <mat-spinner matSuffix diameter="20" *ngIf="checkingUsername"></mat-spinner>
+      <mat-icon matSuffix *ngIf="usernameExists && !checkingUsername" class="error-icon">error_outline</mat-icon>
+      <mat-icon matSuffix *ngIf="registerForm.get('username')?.valid && !usernameExists && !checkingUsername && registerForm.get('username')?.value" class="success-icon">check_circle</mat-icon>
+      <mat-error *ngIf="registerForm.get('username')?.invalid && !usernameExists">Username is required</mat-error>
       <mat-error *ngIf="usernameExists">Username already exists</mat-error>
     </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
+    
+    <mat-form-field appearance="outline" class="form-field">
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" type="email" required (blur)="checkEmailExists()" />
-      <mat-error *ngIf="registerForm.get('email')?.invalid">Invalid email address</mat-error>
+      <mat-icon matPrefix class="form-icon">email</mat-icon>
+      <mat-spinner matSuffix diameter="20" *ngIf="checkingEmail"></mat-spinner>
+      <mat-icon matSuffix *ngIf="emailExists && !checkingEmail" class="error-icon">error_outline</mat-icon>
+      <mat-icon matSuffix *ngIf="registerForm.get('email')?.valid && !emailExists && !checkingEmail && registerForm.get('email')?.value" class="success-icon">check_circle</mat-icon>
+      <mat-error *ngIf="registerForm.get('email')?.invalid && !emailExists">Invalid email address</mat-error>
       <mat-error *ngIf="emailExists">Email is already in use</mat-error>
     </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Password</mat-label>
-      <input matInput formControlName="password" type="password" required />
-      <mat-error *ngIf="registerForm.get('password')?.errors?.['minlength']">
-        Password must be at least 6 characters long
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Confirm Password</mat-label>
-      <input matInput formControlName="confirmPassword" type="password" required />
-      <mat-error *ngIf="registerForm.get('confirmPassword')?.invalid">Confirm Password is required</mat-error>
-      <mat-error *ngIf="errorMessage">{{ errorMessage }}</mat-error>
-    </mat-form-field>
-
-    <button mat-raised-button color="primary" class="register-button" type="submit" [disabled]="registerForm.invalid">
-      Register
+    
+    <div class="password-fields">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
+        <mat-icon matPrefix class="form-icon">lock</mat-icon>
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+          <!-- <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon> -->
+        </button>
+        <mat-error *ngIf="registerForm.get('password')?.errors?.['minlength']">
+          Password must be at least 6 characters long
+        </mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Confirm Password</mat-label>
+        <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword" required />
+        <mat-icon matPrefix class="form-icon">lock</mat-icon>
+        <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
+          <!-- <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon> -->
+        </button>
+        <mat-error *ngIf="registerForm.get('confirmPassword')?.invalid">Confirm Password is required</mat-error>
+      </mat-form-field>
+    </div>
+    
+    <div class="password-strength" *ngIf="registerForm.get('password')?.value">
+      <div class="strength-label">Password strength:</div>
+      <div class="strength-meter">
+        <div class="strength-segment" [ngClass]="passwordStrength >= 1 ? 'active' : ''"></div>
+        <div class="strength-segment" [ngClass]="passwordStrength >= 2 ? 'active' : ''"></div>
+        <div class="strength-segment" [ngClass]="passwordStrength >= 3 ? 'active' : ''"></div>
+        <div class="strength-segment" [ngClass]="passwordStrength >= 4 ? 'active' : ''"></div>
+      </div>
+      <div class="strength-text" [ngClass]="getPasswordStrengthClass()">{{ getPasswordStrengthText() }}</div>
+    </div>
+    
+    <button mat-raised-button color="primary" class="register-button" type="submit" [disabled]="registerForm.invalid || formSubmitting">
+      <span *ngIf="!formSubmitting">Create Account</span>
+      <span *ngIf="formSubmitting" class="spinner"></span>
     </button>
   </form>
+  
+  <div class="form-actions" *ngIf="registrationSuccess">
+    <button mat-raised-button color="primary" (click)="openLoginDialog()" class="login-button">
+      Proceed to Login
+    </button>
+  </div>
+  
+  <div class="register-footer" *ngIf="!registrationSuccess">
+    <p>Already have an account? <a href="#" (click)="openLoginDialog($event)">Log in</a></p>
+  </div>
 </div>

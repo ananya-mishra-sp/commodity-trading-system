@@ -1,33 +1,82 @@
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-  }
-
-.mat-mdc-table .mat-mdc-header-cell {
-    background-color: rgb(131, 4, 4);
-    font-weight: bold;
-    font-size: larger;
- }
-  
-th, td {
-    padding: 10px;
-    text-align: center;
-    background-color: rgb(203, 171, 171);
-    color: rgb(6, 6, 6);
-    border-bottom: 1px solid #ddd;
+.commodity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
-  
-  th {
-    color: rgb(204, 202, 202);
-  }
-  
-  .mat-mdc-raised-button:not(:disabled) {
-    color: rgb(154, 3, 3);
-    background-color: #af8181;
-  }
 
-  button {
-    margin-top: 5px;
+.commodity-card {
+  background: var(--card-bg, #ffffff);
+  border-radius: var(--border-radius, 8px);
+  overflow: hidden;
+  box-shadow: var(--card-shadow, 0 4px 12px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.commodity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.commodity-image {
+  height: 200px;
+  overflow: hidden;
+}
+
+.commodity-card:hover .commodity-image img {
+  transform: scale(1.05);
+}
+
+.commodity-info {
+  padding: 1.5rem;
+}
+
+.commodity-info h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color, #3f51b5);
+}
+
+.commodity-details {
+  margin-bottom: 1.5rem;
+}
+
+.price-tag, .unit-tag {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.price-label, .unit-label {
+  font-weight: 500;
+  color: var(--text-color, #333);
+}
+
+.price-value {
+  font-weight: 700;
+}
+
+.unit-value {
+  font-weight: 500;
+}
+
+.trade-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 1000px) {
+  .commodity-grid {
+    grid-template-columns: 1fr;
   }
-  
+}
+
+.mat-mdc-raised-button:not(:disabled) {
+  color: #2a1577;
+  background-color: white;
+}

@@ -26,6 +26,11 @@ export class AuthService {
     return !!localStorage.getItem('role') && localStorage.getItem('role') === 'Admin';
   }  
 
+  isUserLoggedIn(): boolean {
+    const user = localStorage.getItem('userId'); // Assuming user info is stored here
+    return user !== null;
+  }  
+
   // Register method
   register(userData: { name: string; username: string; email: string; password: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, userData, { responseType: 'text' });

@@ -1,37 +1,65 @@
-<div class="hero">
-  <h1>Welcome to Commodity Trading System</h1>
-  <p>Trade commodities efficiently with the market updates.</p>
-  <div class="action-buttons">
-    <button mat-raised-button color="warn" (click)="openRegisterDialog()">Get Started</button>
-    <button mat-raised-button color="primary" (click)="openLoginDialog()">Dive In</button>
-  </div>
-</div>
-
-<h2 class="section-title">Commodities You Could Trade On</h2>
-
-<div class="commodity-container">
-  <div class="commodity-card" *ngFor="let commodity of commodities" (click)="openCommodityDetails(commodity)">
-    <img [src]="commodity.image" alt="{{ commodity.name }}">
-    <div class="commodity-info">
-      <h3>{{ commodity.name }}</h3>
-      <p>{{ commodity.description }}</p>
+<div class="hero-section">
+  <nav class="navbar">
+    <div class="logo">
+      <a routerLink="/">CommodityTrading</a>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn" (click)="openRegisterDialog()">Register</button>
+      <button class="nav-btn" (click)="openLoginDialog()">Login</button>
+    </div>
+  </nav>
+  
+  <div class="hero-content">
+    <h1>Welcome to Commodity Trading System</h1>
+    <p>Trade commodities efficiently with real-time market updates</p>
+    <div class="action-buttons">
+      <button mat-raised-button class="get-started-btn" (click)="openRegisterDialog()">Get Started</button>
+      <button mat-raised-button class="dive-in-btn" (click)="openLoginDialog()">Dive In</button>
     </div>
   </div>
 </div>
 
-<h2 class="section-title">Trade Here!</h2>
-
-<div class="features">
-  <mat-card class="feature-card">
-    <mat-card-title>Real-time Market Data</mat-card-title>
-    <mat-card-content>Stay updated with live market prices.</mat-card-content>
-  </mat-card>
-  <mat-card class="feature-card">
-    <mat-card-title>Advanced Analytics</mat-card-title>
-    <mat-card-content>Get insights with portfolio and risk analysis.</mat-card-content>
-  </mat-card>
-  <mat-card class="feature-card">
-    <mat-card-title>Secure Transactions</mat-card-title>
-    <mat-card-content>Safe and transparent trading environment.</mat-card-content>
-  </mat-card>
+<div class="main-content">
+  <h2 class="section-title">Commodities You Could Trade On</h2>
+  
+  <div class="commodity-grid">
+    <div class="commodity-card" *ngFor="let commodity of commodities" (click)="openCommodityDetails(commodity)">
+      <div class="commodity-image">
+        <img [src]="commodity.image" alt="{{ commodity.name }}">
+      </div>
+      <div class="commodity-info">
+        <h3>{{ commodity.name }}</h3>
+        <p>{{ commodity.description }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <h2 class="section-title">Trade Here!</h2>
+  
+  <div class="features-grid">
+    <mat-card class="feature-card">
+      <mat-card-title>Real-time Market Data</mat-card-title>
+      <mat-card-content>
+        <p>Stay updated with live market prices and trends across all commodities.</p>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="feature-card">
+      <mat-card-title>Advanced Analytics</mat-card-title>
+      <mat-card-content>
+        <p>Get insights with portfolio tracking and comprehensive risk analysis tools.</p>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="feature-card">
+      <mat-card-title>Secure Transactions</mat-card-title>
+      <mat-card-content>
+        <p>Trade with confidence in our safe and transparent trading environment.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
+
+<footer class="site-footer">
+  <p>&copy; 2025 CommodityTrading. All rights reserved.</p>
+</footer>

@@ -5,6 +5,7 @@ import com.trading.commodity.repository.CommodityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -37,21 +38,11 @@ public class CommodityService {
         return commodityRepository.save(commodity);
     }
 
-    public Commodity updateCommodity(Integer id, Commodity commodityDetails) {
-        return commodityRepository.findById(id)
-                .map(existing -> {
-                    existing.setName(commodityDetails.getName());
-                    existing.setUnit(commodityDetails.getUnit());
-                    existing.setCurrentPrice(commodityDetails.getCurrentPrice());
-                    return commodityRepository.save(existing);
-                })
-                .orElseThrow(() -> new RuntimeException("Commodity not found"));
-    }
-
     public void deleteCommodity(Integer id) {
         commodityRepository.deleteById(id);
     }
 
+    //Update or Create new commodity or else no changes
     public void processCSV(MultipartFile file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             List<Commodity> commodities = reader.lines()

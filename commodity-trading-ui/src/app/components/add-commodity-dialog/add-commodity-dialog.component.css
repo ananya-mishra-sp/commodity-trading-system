@@ -1,0 +1,137 @@
+/* Dialog styling */
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+mat-dialog-content {
+  display: block;
+  min-width: 400px;
+  max-height: 70vh;
+  padding-top: 12px;
+}
+
+h2 {
+  margin-bottom: px;
+  color:  rgb(25, 88, 165) !important;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.mat-dialog-actions {
+  padding: 12px 0;
+  margin-bottom: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Button styles */
+.cancel-btn {
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  border-radius: var(--border-radius);
+  padding: 8px 16px;
+  margin: 5px;
+  transition: var(--transition);
+  color: rgb(24, 24, 104) !important;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(179, 207, 236, 0.8) !important;
+}
+
+.submit-btn {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border-radius: var(--border-radius);
+  padding: 8px 24px;
+  min-width: 120px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--card-shadow);
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: var(--primary-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.15);
+}
+
+.submit-btn:disabled {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  color: rgba(0, 0, 0, 0.38) !important;
+  box-shadow: none;
+}
+
+/* Loading spinner inside button */
+mat-spinner {
+  margin: 0 auto;
+}
+
+/* Error states */
+mat-error {
+  font-size: 12px;
+  color: var(--danger-color);
+}
+
+/* Form field styling */
+.mat-form-field-outline {
+  color: rgba(203, 213, 225, 0.5) !important;
+}
+
+.mat-form-field-outline-thick {
+  color: var(--primary-light) !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: var(--primary-light) !important;
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: var(--primary-color) !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-label {
+  color: var(--text-light) !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: var(--primary-color) !important;
+}
+
+.mat-input-element {
+  color: var(--text-color) !important;
+}
+
+/* Price input specific styling */
+.mat-form-field-prefix {
+  color: var(--text-light);
+  margin-right: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 599px) {
+  mat-dialog-content {
+    min-width: unset;
+    width: 100%;
+  }
+  
+  .mat-dialog-actions {
+    flex-direction: column;
+  }
+  
+  .cancel-btn, .submit-btn {
+    width: 100%;
+  }
+}
+
+.mat-mdc-form-field{
+  margin-top: 8px !important ;
+}

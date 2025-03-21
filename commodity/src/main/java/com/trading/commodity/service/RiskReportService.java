@@ -95,6 +95,7 @@ public class RiskReportService {
     }
 
     public List<RiskReport> getUserRiskReports(Integer userId) {
+
         return riskReportRepository.findByUserId(userId);
     }
 }

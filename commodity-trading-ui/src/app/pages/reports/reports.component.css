@@ -1,36 +1,28 @@
-/* General container styling */
+/* Reports Container */
 .reports-container {
-  width: 90%;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
-  color: #fff;
+  padding: 2rem;
+  background-color: var(--light-bg);
 }
 
 .reports-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
 }
 
 .reports-header h2 {
-  color: #b6b5b5;
+  color: var(--primary-color);
+  font-size: 2rem;
   margin: 0;
-  font-size: 28px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.reports-header div {
-  display: flex;
-  gap: 10px;
-}
-
-/* Tab styling */
+/* Tab Styling */
 .report-tabs {
-  background-color: #837e7e;
-  border-radius: 4px;
-  border: 1px solid #3a0000;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
 }
 
 .tab-icon {
@@ -38,85 +30,148 @@
 }
 
 .tab-content {
-  padding: 20px;
+  padding: 2rem;
 }
 
-/* Card header styling */
+/* Card Header */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .card-header h3 {
-  color: #7b0404;
+  color: var(--primary-color);
   margin: 0;
-  font-size: 20px;
+  font-size: 1.5rem;
 }
 
-/* Table styling */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Search Field */
+.search-field {
+  width: 250px;
+}
+
+/* View Toggle */
+.view-toggle {
+  height: 40px;
+}
+
+/* Table View */
+.table-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .table-container {
   overflow-x: auto;
-  background-color: #f9f3f3;
-  border-radius: 4px;
-  border: 1px solid #3a0000;
-  margin-bottom: 30px;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
 }
 
-.portfolio-table, .risk-table {
+table {
   width: 100%;
-  background-color: rgb(207, 181, 185);
 }
 
-/* Profit/Loss styling */
+th.mat-header-cell {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  padding: 1rem;
+}
+
+td.mat-cell {
+  padding: 1rem;
+}
+
 .profit {
-  color: #4caf50;
-  font-weight: bold;
+  color: green;
 }
 
 .loss {
-  color: #f44336;
-  font-weight: bold;
+  color: red;
 }
 
-/* Responsive adjustments */
+/* Grid View */
+.grid-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.commodity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.commodity-card {
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+}
+
+.commodity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.grid-item-info {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .reports-container {
-    width: 100%;
-    padding: 10px;
-  }
-  
   .reports-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
-  }
-  
-  .reports-header div {
-    width: 100%;
-  }
-  
-  .reports-header div button {
-    flex: 1;
+    gap: 1rem;
   }
   
   .card-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
   }
   
-  .card-header button {
+  .action-buttons {
     width: 100%;
+    justify-content: space-between;
+  }
+  
+  .search-field {
+    width: 100%;
+  }
+  
+  .commodity-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-.card-header h3{
-  text-align: center;
+.reports-header h2 {
+  color: #3f51b5;
+  font-size: 2rem;
+  margin: 0;
 }
 
-.mat-mdc-table th{
-  background-color: maroon;
-  color: white;
+.mat-mdc-raised-button {
+  color: rgba(34, 34, 197, 0.842);
+  }
+
+  .action-buttons{
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 60px;
 }

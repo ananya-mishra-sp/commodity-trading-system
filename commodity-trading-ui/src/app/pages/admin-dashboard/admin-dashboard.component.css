@@ -1,172 +1,172 @@
-/* Admin Dashboard Styles */
-.admin-dashboard {
-  padding: 50px;
-  font-family: 'Arial', sans-serif;
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5;
 }
 
-/* Navbar */
-.admin-navbar {
+.dashboard-content {
+  flex: 1;
+  padding: 2rem 5%;
+}
+
+.navigation-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.navigation-tabs button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  color: #4e4376;
+  font-weight: 500;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.navigation-tabs button.active {
+  background: linear-gradient(135deg, #2b5876, #4e4376);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.section-header {
   display: flex;
   justify-content: space-between;
-  background: rgb(125, 124, 124);
-  padding: 8px;
-  color: white;
   align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-.brand {
-  font-size: 25px;
-  font-weight: bold;
-  margin-left: 20px;
+.section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #163180ee;
 }
 
-.nav-links button {
-  padding-top: 10px;
+.section-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+}
+
+.add-button {
+  background: linear-gradient(135deg, #2b5876, #4e4376);
   color: white;
-  font-size: 16px;
-  margin: 0 10px;
 }
 
-.mat-mdc-raised-button:not(:disabled) {
-  background-color: #8B0000; /* Dark Red */
-  margin: 5px;
+.upload-button {
+  background-color: #3f51b5;
+  color: white;
 }
 
-.mat-mdc-raised-button:not(:disabled):hover {
-  background-color: #a12a2a;
-}
-
-/* Welcome Message */
-.welcome-message {
-  font-size: 35px;
-  color: rgb(157, 47, 47);
-  margin-top: 20px;
-  margin-left: 15px;
-  text-shadow: #666;
-}
-
-h3{
-  color: gray;
-  font-size: 25px;
-  margin-left: 27px;
-}
-
-/* Table Styling */
-table {
-  width: 100%;
-  margin-top: 10px;
-  border-collapse: collapse;
-}
-
-/* Table Header */
-.mat-mdc-table th {
-  background-color: #8B0000 !important; /* Dark Red */
-  color: white !important;
-  font-weight: bold;
-  text-align:left;
-  padding: 10px;
-  padding-left: 30px;
-}
-
-/* Table Rows */
-.mat-mdc-table tr:nth-child(odd) {
-  background-color: #FFE6E6; /* Light Pink */
-}
-
-.mat-mdc-table tr:nth-child(even) {
-  background-color: #FFF5F5; /* Off White */
-}
-
-/* Action Column */
-.action-btn {
-  color: white !important;
-  background-color: #D32F2F !important; /* Danger Red */
-  border-radius: 5px;
-  margin: 2px;
-}
-
-.action-btn:hover {
-  background-color: #b71c1c !important;
-}
-
-/* Pagination */
-.mat-mdc-paginator {
-  background-color: #8B0000 !important; /* Dark Red */
-  color: white !important;
-}
-
-.mat-mdc-paginator-page-size {
-  color: white !important;
-}
-
-.mat-mdc-paginator-navigation {
-  color: white !important;
-}
-
-.mat-mdc-paginator-range-label {
-  color: white !important;
-}
-
-/* Ensure all buttons have white text */
-button.mat-mdc-button, button.mat-mdc-raised-button, button.mat-mdc-icon-button {
-  color: white !important;
-  margin-bottom: 10px !important;
-}
-
-/* Add these styles to your admin-dashboard.component.css file */
-
-/* Search Container Styles */
 .search-container {
-  margin-bottom: 2px;
-  width: 100%;
-  max-width: 500px;
+  margin-bottom: 1.5rem;
 }
 
 .search-container mat-form-field {
   width: 100%;
 }
 
-/* Actions Row Styles - Flex layout for search and upload buttons */
-.actions-row {
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  font-weight: 600;
+  color: #333;
+  background-color: rgba(193, 207, 235, 0.574) !important;
+}
+
+td.price-cell {
+  font-weight: 500;
+  color: #4e4376;
+}
+
+.loading-spinner {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  margin-right: 40px;
-  flex-wrap: wrap;
-  gap: 16px;
+  justify-content: center;
+  padding: 2rem 0;
 }
 
-/* Empty state styling */
-.empty-state {
+.no-data {
   text-align: center;
-  padding: 32px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  margin: 16px 0;
-}
-
-.empty-state p {
+  padding: 2rem !important;
   color: #666;
-  font-size: 16px;
 }
 
-/* Responsive adjustments */
+.site-footer {
+  background-color: #f5f5f5;
+  padding: 1rem 5%;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+  color: #666;
+}
+
 @media (max-width: 768px) {
-  .actions-row {
+  .section-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
   }
   
-  .search-container, .file-upload {
-    width: 100%;
+  .navigation-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .navigation-tabs button {
+    flex: 1 0 calc(50% - 0.5rem);
   }
 }
 
-mat-label{
-  color: white;
+@media (max-width: 480px) {
+  .section-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .action-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .navigation-tabs button {
+    flex: 1 0 100%;
+  }
 }
 
-.mat-mdc-form-field.mat-form-field-animations-enabled .mdc-text-field__input{
+.site-footer {
+  background-color: #2c3e50;
   color: white;
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: auto;
+}
+
+.mat-icon{
+  margin-right:0px !important;
 }

@@ -77,6 +77,7 @@ public class TransactionService {
     }
 
     public List<Transaction> getUserTransactions(Integer userId) {
+
         return transactionRepository.findByUserId(userId);
     }
 

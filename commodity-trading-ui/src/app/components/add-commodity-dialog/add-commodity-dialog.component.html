@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Add New Commodity</h2>
+<div mat-dialog-content>
+  <form [formGroup]="commodityForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Commodity Name</mat-label>
+      <input matInput formControlName="name" placeholder="Enter commodity name">
+      <mat-error *ngIf="commodityForm.controls['name'].hasError('required')">
+        Name is required
+      </mat-error>
+      <mat-error *ngIf="commodityForm.controls['name'].hasError('maxlength')">
+        Name cannot exceed 100 characters
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Unit</mat-label>
+      <input matInput formControlName="unit" placeholder="e.g. kg, ton, liter">
+      <mat-error *ngIf="commodityForm.controls['unit'].hasError('required')">
+        Unit is required
+      </mat-error>
+      <mat-error *ngIf="commodityForm.controls['unit'].hasError('maxlength')">
+        Unit cannot exceed 50 characters
+      </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Price (USD)</mat-label>
+      <input matInput formControlName="currentPrice" placeholder="0.00" type="number" step="0.01" min="0.01">
+      <mat-error *ngIf="commodityForm.controls['currentPrice'].hasError('required')">
+        Price is required
+      </mat-error>
+      <mat-error *ngIf="commodityForm.controls['currentPrice'].hasError('min')">
+        Price must be greater than $0.00
+      </mat-error>
+      <mat-error *ngIf="commodityForm.controls['currentPrice'].hasError('pattern')">
+        Price must be a valid number with up to 2 decimal places
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading" class="cancel-btn">Cancel</button>
+  <button 
+    mat-flat-button 
+    color="primary" 
+    (click)="onSubmit()" 
+    [disabled]="commodityForm.invalid || loading"
+    class="submit-btn">
+    <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+    <span *ngIf="!loading">Add Commodity</span>
+  </button>
+</div>

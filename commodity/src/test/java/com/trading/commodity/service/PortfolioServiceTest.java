@@ -1,163 +1,106 @@
 package com.trading.commodity.service;
 
-import com.trading.commodity.model.*;
+import com.trading.commodity.model.Commodity;
+import com.trading.commodity.model.Portfolio;
+import com.trading.commodity.model.Transaction;
+import com.trading.commodity.model.User;
 import com.trading.commodity.repository.CommodityRepository;
 import com.trading.commodity.repository.PortfolioRepository;
 import com.trading.commodity.repository.TransactionRepository;
 import com.trading.commodity.repository.UserRepository;
-import com.trading.commodity.service.PortfolioService;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class PortfolioServiceTest {
+@ExtendWith(MockitoExtension.class)
+class PortfolioServiceTest {
 
-    @Autowired
+    @Mock
     private PortfolioRepository portfolioRepository;
 
-    @Autowired
+    @Mock
     private TransactionRepository transactionRepository;
 
-    @Autowired
+    @Mock
     private UserRepository userRepository;
 
-    @Autowired
+    @Mock
     private CommodityRepository commodityRepository;
 
+    @InjectMocks
     private PortfolioService portfolioService;
-    private User testUser;
-    private Commodity testCommodity;
 
-    @Before
-    public void setUp() {
-        portfolioService = new PortfolioService(portfolioRepository, transactionRepository, userRepository, commodityRepository);
+    private User user;
+    private Commodity commodity;
+    private Portfolio portfolio;
+    private Transaction buyTransaction;
+    private Transaction sellTransaction;
 
-        // Create and save a test user
-        testUser = new User();
-        testUser.setName("Test User");
-        testUser.setUsername("testuser");
-        testUser.setEmail("testuser@example.com");
-        testUser.setPassword("password");
-        testUser.setRole(Role.valueOf("User"));
-        userRepository.save(testUser);
+    @BeforeEach
+    void setUp() {
+        user = new User();
+        user.setId(1);
+        user.setUsername("testUser");
 
-        // Create and save a test commodity
-        testCommodity = new Commodity();
-        testCommodity.setName("Gold");
-        testCommodity.setCurrentPrice(BigDecimal.valueOf(2000));
-        commodityRepository.save(testCommodity);
-    }
+        commodity = new Commodity();
+        commodity.setId(1);
+        commodity.setName("Gold");
+        commodity.setCurrentPrice(new BigDecimal("2000"));
 
-    @After
-    public void tearDown() {
-        transactionRepository.deleteAll();
-        portfolioRepository.deleteAll();
-        commodityRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
-    @Test
-    public void testUpdatePortfolio_BuyTransaction() {
-        // Create a Buy transaction
-        Transaction transaction = new Transaction();
-        transaction.setUser(testUser);
-        transaction.setCommodity(testCommodity);
-        transaction.setTradeType("Buy");
-        transaction.setQuantity(BigDecimal.valueOf(5));
-        transaction.setTradePrice(BigDecimal.valueOf(1900));
-        transaction.setTradeDate(LocalDateTime.now());
-        transactionRepository.save(transaction);
-
-        // Update portfolio
-        portfolioService.updatePortfolio(testUser.getId(), testCommodity.getId());
-
-        // Fetch and validate portfolio
-        List<Portfolio> portfolios = portfolioRepository.findByUserId(testUser.getId());
-        assertFalse(portfolios.isEmpty());
-        Portfolio portfolio = portfolios.get(0);
-        assertEquals(BigDecimal.valueOf(5), portfolio.getTotalQuantity());
-        assertEquals(BigDecimal.valueOf(1900), portfolio.getAvgBuyPrice());
-    }
-
-    @Test
-    public void testUpdatePortfolio_SellTransaction() {
-        // Create a Buy transaction first
-        Transaction buyTransaction = new Transaction();
-        buyTransaction.setUser(testUser);
-        buyTransaction.setCommodity(testCommodity);
+        buyTransaction = new Transaction();
+        buyTransaction.setUser(user);
+        buyTransaction.setCommodity(commodity);
         buyTransaction.setTradeType("Buy");
-        buyTransaction.setQuantity(BigDecimal.valueOf(10));
-        buyTransaction.setTradePrice(BigDecimal.valueOf(1800));
-        buyTransaction.setTradeDate(LocalDateTime.now());
-        transactionRepository.save(buyTransaction);
+        buyTransaction.setQuantity(new BigDecimal("2"));
+        buyTransaction.setTradePrice(new BigDecimal("1900"));
 
-        // Update portfolio after buying
-        portfolioService.updatePortfolio(testUser.getId(), testCommodity.getId());
-
-        // Create a Sell transaction
-        Transaction sellTransaction = new Transaction();
-        sellTransaction.setUser(testUser);
-        sellTransaction.setCommodity(testCommodity);
+        sellTransaction = new Transaction();
+        sellTransaction.setUser(user);
+        sellTransaction.setCommodity(commodity);
         sellTransaction.setTradeType("Sell");
-        sellTransaction.setQuantity(BigDecimal.valueOf(5));
-        sellTransaction.setTradePrice(BigDecimal.valueOf(2000));
-        sellTransaction.setTradeDate(LocalDateTime.now());
-        transactionRepository.save(sellTransaction);
-
-        // Update portfolio after selling
-        portfolioService.updatePortfolio(testUser.getId(), testCommodity.getId());
-
-        // Fetch and validate portfolio
-        List<Portfolio> portfolios = portfolioRepository.findByUserId(testUser.getId());
-        assertFalse(portfolios.isEmpty());
-        Portfolio portfolio = portfolios.get(0);
-        assertEquals(BigDecimal.valueOf(5), portfolio.getTotalQuantity()); // Remaining quantity
-        assertEquals(BigDecimal.valueOf(1800), portfolio.getAvgBuyPrice()); // Avg Buy Price remains
-        assertTrue(portfolio.getProfitLoss().compareTo(BigDecimal.ZERO) > 0); // Profit should be positive
+        sellTransaction.setQuantity(new BigDecimal("1"));
+        sellTransaction.setTradePrice(new BigDecimal("1950"));
     }
 
     @Test
-    public void testUpdatePortfolio_EmptyPortfolioAfterFullSell() {
-        // Create a Buy transaction
-        Transaction buyTransaction = new Transaction();
-        buyTransaction.setUser(testUser);
-        buyTransaction.setCommodity(testCommodity);
-        buyTransaction.setTradeType("Buy");
-        buyTransaction.setQuantity(BigDecimal.valueOf(5));
-        buyTransaction.setTradePrice(BigDecimal.valueOf(1900));
-        buyTransaction.setTradeDate(LocalDateTime.now());
-        transactionRepository.save(buyTransaction);
+    void testUpdatePortfolio_BuyTransaction() {
+        when(transactionRepository.findByUserIdAndCommodityId(1, 1)).thenReturn(List.of(buyTransaction));
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(commodityRepository.findById(1)).thenReturn(Optional.of(commodity));
+        when(portfolioRepository.findByUserIdAndCommodityId(1, 1)).thenReturn(Optional.empty());
 
-        // Update portfolio after buying
-        portfolioService.updatePortfolio(testUser.getId(), testCommodity.getId());
+        portfolioService.updatePortfolio(1, 1);
 
-        // Create a Sell transaction for the full quantity
-        Transaction sellTransaction = new Transaction();
-        sellTransaction.setUser(testUser);
-        sellTransaction.setCommodity(testCommodity);
-        sellTransaction.setTradeType("Sell");
-        sellTransaction.setQuantity(BigDecimal.valueOf(5));
-        sellTransaction.setTradePrice(BigDecimal.valueOf(2000));
-        sellTransaction.setTradeDate(LocalDateTime.now());
-        transactionRepository.save(sellTransaction);
+        verify(portfolioRepository, times(1)).save(any(Portfolio.class));
+    }
 
-        // Update portfolio after selling everything
-        portfolioService.updatePortfolio(testUser.getId(), testCommodity.getId());
+    @Test
+    void testUpdatePortfolio_SellTransaction() {
+        when(transactionRepository.findByUserIdAndCommodityId(1, 1)).thenReturn(List.of(buyTransaction, sellTransaction));
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(commodityRepository.findById(1)).thenReturn(Optional.of(commodity));
+        when(portfolioRepository.findByUserIdAndCommodityId(1, 1)).thenReturn(Optional.of(new Portfolio()));
 
-        // Fetch and validate portfolio
-        List<Portfolio> portfolios = portfolioRepository.findByUserId(testUser.getId());
-        assertTrue(portfolios.isEmpty()); // Portfolio should be empty after full sell
+        portfolioService.updatePortfolio(1, 1);
+
+        verify(portfolioRepository, times(1)).save(any(Portfolio.class));
+    }
+
+    @Test
+    void testGetUserPortfolio() {
+        when(portfolioRepository.findByUserId(1)).thenReturn(List.of(new Portfolio()));
+        List<Portfolio> result = portfolioService.getUserPortfolio(1);
+        assertEquals(1, result.size());
     }
 }

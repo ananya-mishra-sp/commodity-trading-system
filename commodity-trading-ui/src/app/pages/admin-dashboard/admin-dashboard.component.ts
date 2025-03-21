@@ -1,17 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, PageEvent, MatPaginator } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgIf } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AddCommodityDialogComponent } from '../../components/add-commodity-dialog/add-commodity-dialog.component';
+import { AddUserDialogComponent } from '../../components/add-user-dialog/add-user-dialog.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AdminNavbarComponent } from '../../components/admin-navbar/admin-navbar.component';
+import { DeletePopupComponent } from '../../components/delete-popup/delete-popup.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -27,226 +36,325 @@ import { MatIcon } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     NgIf,
-    FormsModule, 
-    MatIcon
-  ]
+    FormsModule,
+    MatIconModule,
+    MatSortModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    AdminNavbarComponent
+]
 })
 export class AdminDashboardComponent implements OnInit {
   selectedTab = 'commodities';
 
-  // Full datasets
+  // Commodities data
   allCommodities: any[] = [];
-  allUsers: any[] = [];
-
-  // Filtered data (search results)
   filteredCommodities: any[] = [];
-  filteredUsers: any[] = [];
+  commoditiesDataSource = new MatTableDataSource<any>([]);
+  commodityColumns: string[] = ['id', 'name', 'unit', 'price', 'actions'];
 
-  // Paginated data (to display)
-  paginatedCommodities: any[] = [];
-  paginatedUsers: any[] = [];
+  // Users data
+  allUsers: any[] = [];
+  filteredUsers: any[] = [];
+  usersDataSource = new MatTableDataSource<any>([]);
+  userColumns: string[] = ['id', 'name', 'username', 'email', 'actions'];
 
   // Pagination properties
-  pageSize: number = 10;
-  commodityPage: number = 0;
-  userPage: number = 0;
-  totalCommodities: number = 0;
-  totalUsers: number = 0;
+  commodityPageSize = 200;
+  commodityPageIndex = 0;
+  userPageSize = 200;
+  userPageIndex = 0;
+  pageSizeOptions = [5, 10, 25, 50];
+
+  // Total items counts
+  totalCommodities = 0;
+  totalUsers = 0;
+
+// Sorting
+commoditySortActive = 'name';
+commoditySortDirection: 'asc' | 'desc' = 'asc';
+userSortActive = 'name';
+userSortDirection: 'asc' | 'desc' = 'asc';
 
   // Search terms
-  commoditySearchTerm: string = '';
-  userSearchTerm: string = '';
+  commoditySearchTerm = '';
+  userSearchTerm = '';
 
-  constructor(private adminService: AdminService, public dialog: MatDialog, private router: Router) {}
+  @ViewChild('commodityPaginator') commodityPaginator!: MatPaginator;
+  @ViewChild('userPaginator') userPaginator!: MatPaginator;
+
+  @ViewChild('commoditySort') commoditySort!: MatSort;
+  @ViewChild('userSort') userSort!: MatSort;
+  
+  constructor(
+    private adminService: AdminService, 
+    public dialog: MatDialog, 
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
-    this.loadAllCommodities();
-    this.loadAllUsers();
+    // Check for tab parameter in URL
+    this.route.queryParams.subscribe(params => {
+      if (params['tab']) {
+        this.selectedTab = params['tab'];
+      }
+    });
+
+    this.loadCommodities();
+    this.loadUsers();
   }
 
-  // 📌 Upload CSV file
-  uploadCSV(event: Event) {
+  ngAfterViewInit() {
+  this.commoditiesDataSource.paginator = this.commodityPaginator;
+  this.commoditiesDataSource.sort = this.commoditySort;
+
+  this.usersDataSource.paginator = this.userPaginator;
+  this.usersDataSource.sort = this.userSort;
+}
+
+  openAddCommodityDialog(): void {
+    const dialogRef = this.dialog.open(AddCommodityDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadCommodities();
+        this.showNotification('Commodity added successfully', 'success');
+      }
+    });
+  }
+
+  confirmDeleteCommodity(id: number, name: string): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Delete Commodity',
+        message: `Are you sure you want to delete ${name}?`,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.deleteCommodity(id, name);
+      }
+    });
+  }
+
+  deleteCommodity(id: number, name: string): void {
+    this.adminService.deleteCommodity(id).subscribe({
+      next: () => {
+        this.showNotification(`Commodity "${name}" deleted successfully`, 'success');
+        this.loadCommodities();
+      },
+      error: (error) => {
+        console.error('Error deleting commodity:', error);
+        this.showNotification(`Failed to delete commodity "${name}"`, 'error');
+      }
+    });
+  }
+
+ // Load Commodities - Fetch Once & Use Local Pagination/Search
+ loadCommodities(): void {
+  this.adminService.getCommodities().subscribe({
+    next: (commodities) => {
+      this.allCommodities = commodities;
+      this.applyFilterCommodities();
+    },
+    error: (error) => {
+      console.error('Error loading commodities:', error);
+      this.showNotification('Failed to load commodities', 'error');
+    }
+  });
+}
+
+// Load Users - Fetch Once & Use Local Pagination/Search
+loadUsers(): void {
+  this.adminService.getUsers().subscribe({
+    next: (users) => {
+      this.allUsers = users.filter((user: any) => user.role === 'User');
+      this.applyFilterUsers();
+    },
+    error: (error) => {
+      console.error('Error loading users:', error);
+      this.showNotification('Failed to load users', 'error');
+    }
+  });
+}
+
+// Apply Search & Pagination for Commodities
+applyFilterCommodities(): void {
+  let filteredData = this.allCommodities.filter(commodity =>
+    commodity.name.toLowerCase().includes(this.commoditySearchTerm.toLowerCase())
+  );
+  this.applySort(filteredData, this.commoditySortActive, this.commoditySortDirection);
+  this.paginateCommodities(filteredData);
+}
+
+paginateCommodities(filteredData: any[]): void {
+  const start = this.commodityPageIndex * this.commodityPageSize;
+  const end = start + this.commodityPageSize;
+  this.commoditiesDataSource.data = filteredData.slice(start, end);
+}
+
+onCommoditySortChange(sort: Sort): void {
+  this.commoditySortActive = sort.active;
+  this.commoditySortDirection = sort.direction || 'asc';
+  this.loadCommodities();
+}
+
+onUserSortChange(sort: Sort): void {
+  this.userSortActive = sort.active;
+  this.userSortDirection = sort.direction || 'asc';
+  this.applyFilterUsers();
+}
+
+onCommodityPageChange(event: PageEvent): void {
+  this.commodityPageIndex = event.pageIndex;
+  this.commodityPageSize = event.pageSize;
+  this.applyFilterCommodities();
+}
+
+onCommoditySearchChange(): void {
+  this.commodityPageIndex = 0;
+  this.applyFilterCommodities();
+}
+
+// Apply Search & Pagination for Users
+applyFilterUsers(): void {
+  let filteredData = this.allUsers.filter(user =>
+    user.name.toLowerCase().includes(this.userSearchTerm.toLowerCase()) ||
+    user.username.toLowerCase().includes(this.userSearchTerm.toLowerCase())
+  );
+  this.applySort(filteredData, this.userSortActive, this.userSortDirection);
+  this.paginateUsers(filteredData);
+}
+
+paginateUsers(filteredData: any[]): void {
+  const start = this.userPageIndex * this.userPageSize;
+  const end = start + this.userPageSize;
+  this.usersDataSource.data = filteredData.slice(start, end);
+}
+
+onUserPageChange(event: PageEvent): void {
+  this.userPageIndex = event.pageIndex;
+  this.userPageSize = event.pageSize;
+  this.applyFilterUsers();
+}
+
+onUserSearchChange(): void {
+  this.userPageIndex = 0;
+  this.applyFilterUsers();
+}
+
+  openAddUserDialog(): void {
+    const dialogRef = this.dialog.open(AddUserDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadUsers();
+        this.showNotification('User added successfully', 'success');
+      }
+    });
+  }
+
+  confirmDeleteUser(id: number, username: string): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Delete User',
+        message: `Are you sure you want to delete user "${username}"?`,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.deleteUser(id, username);
+      }
+    });
+  }
+
+  deleteUser(id: number, username: string): void {
+    this.adminService.deleteUser(id).subscribe({
+      next: () => {
+        this.showNotification(`User "${username}" deleted successfully`, 'success');
+        this.loadUsers();
+      },
+      error: (error) => {
+        console.error('Error deleting user:', error);
+        this.showNotification(`Failed to delete user "${username}"`, 'error');
+      }
+    });
+  }
+
+  applySort(data: any[], active: string, direction: 'asc' | 'desc'): void {
+    data.sort((a, b) => {
+      let valueA = a[active];
+      let valueB = b[active];
+
+      if (typeof valueA === 'string') valueA = valueA.toLowerCase();
+      if (typeof valueB === 'string') valueB = valueB.toLowerCase();
+
+      if (valueA < valueB) return direction === 'asc' ? -1 : 1;
+      if (valueA > valueB) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  // CSV Upload functionality
+  uploadCSV(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      const file = input.files[0]; // Correctly extracting the File object
+      const file = input.files[0];
       const formData = new FormData();
       formData.append('file', file);
   
       this.adminService.uploadCommodityCSV(formData).subscribe({
         next: () => {
-          alert('Commodities uploaded successfully!');
-          this.loadAllCommodities();
+          this.showNotification('Commodities CSV uploaded successfully', 'success');
+          this.loadCommodities();
         },
         error: (err) => {
-          alert('Error uploading CSV: ' + err.message);
+          console.error('Error uploading CSV:', err);
+          this.showNotification('Failed to upload CSV file', 'error');
         }
       });
     }
-  }  
+  }
 
-  // ─── Load complete commodities dataset ─────────────────────────────
-  loadAllCommodities() {
-    // Assuming adminService.getAllCommodities() returns all commodities (or simulate using a very high page size)
-    this.adminService.getAllCommodities().subscribe({
-      next: (data: any[]) => {
-        this.allCommodities = data;
-        this.totalCommodities = data.length;
-        this.applyCommodityFilters();
-      },
-      error: (error) => {
-        console.error('Error fetching commodities:', error);
-      }
+  // Utility functions
+  showNotification(message: string, type: 'success' | 'error' | 'info'): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: `notification-${type}`,
+      horizontalPosition: 'end',
+      verticalPosition: 'top'
     });
   }
-
-  // ─── Load complete users dataset ─────────────────────────────
-  loadAllUsers() {
-    this.adminService.getAllUsers().subscribe({
-      next: (data: any[]) => {
-        // Exclude admins
-        this.allUsers = data.filter((user: any) => user.role === 'User');
-        this.totalUsers = this.allUsers.length;
-        this.applyUserFilters();
-      },
-      error: (error) => {
-        console.error('Error fetching users:', error);
-      }
-    });
-  }
-
-  // ─── Commodity Filtering and Pagination ─────────────────────────────
-  applyCommodityFilters() {
-    let filtered = [...this.allCommodities];
-    if (this.commoditySearchTerm.trim()) {
-      const query = this.commoditySearchTerm.toLowerCase().trim();
-      filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(query) ||
-        (item.unit && item.unit.toLowerCase().includes(query)) ||
-        String(item.id).includes(query) ||
-        String(item.currentPrice).includes(query)
-      );
-    }
-    this.filteredCommodities = filtered;
-    this.totalCommodities = filtered.length;
-    this.commodityPage = 0; // Reset to first page
-    this.updatePaginatedCommodities();
-  }
-
-  updatePaginatedCommodities() {
-    const start = this.commodityPage * this.pageSize;
-    const end = start + this.pageSize;
-    this.paginatedCommodities = this.filteredCommodities.slice(start, end);
-  }
-
-  onCommodityPageChange(event: PageEvent) {
-    this.commodityPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.updatePaginatedCommodities();
-  }
-
-  searchCommodities() {
-    this.applyCommodityFilters();
-  }
-
-  clearCommoditySearch() {
-    this.commoditySearchTerm = '';
-    this.applyCommodityFilters();
-  }
-
-  // ─── User Filtering and Pagination ─────────────────────────────
-  applyUserFilters() {
-    let filtered = [...this.allUsers];
-    if (this.userSearchTerm.trim()) {
-      const query = this.userSearchTerm.toLowerCase().trim();
-      filtered = filtered.filter(user =>
-        user.name.toLowerCase().includes(query) ||
-        user.username.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query) ||
-        String(user.id).includes(query)
-      );
-    }
-    this.filteredUsers = filtered;
-    this.totalUsers = filtered.length;
-    this.userPage = 0; // Reset to first page
-    this.updatePaginatedUsers();
-  }
-
-  updatePaginatedUsers() {
-    const start = this.userPage * this.pageSize;
-    const end = start + this.pageSize;
-    this.paginatedUsers = this.filteredUsers.slice(start, end);
-  }
-
-  onUserPageChange(event: PageEvent) {
-    this.userPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.updatePaginatedUsers();
-  }
-
-  searchUsers() {
-    this.applyUserFilters();
-  }
-
-  clearUserSearch() {
-    this.userSearchTerm = '';
-    this.applyUserFilters();
-  }
-
-  // ─── Delete handlers ─────────────────────────────
-  confirmDeleteCommodity(id: number, name: string) {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: {
-        title: 'Delete Commodity',
-        message: `Are you sure you want to delete the commodity: ${name}?`
-      }
-    });
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-      if (confirmed) {
-        this.deleteCommodity(id);
-      }
-    });
-  }
-
-  deleteCommodity(id: number) {
-    this.adminService.deleteCommodity(id).subscribe({
-      next: () => {
-        this.loadAllCommodities();
-      },
-      error: (err) => {
-        console.error('Error deleting commodity:', err);
-      }
-    });
-  }
-
-  confirmDeleteUser(id: number, username: string) {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: {
-        title: 'Delete User',
-        message: `Are you sure you want to delete the user: ${username}?`
-      }
-    });
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-      if (confirmed) {
-        this.deleteUser(id);
-      }
-    });
-  }
-
-  deleteUser(id: number) {
-    this.adminService.deleteUser(id).subscribe({
-      next: () => {
-        this.loadAllUsers();
-      },
-      error: (err) => {
-        console.error('Error deleting user:', err);
-      }
-    });
-  }
-
-  // ─── Logout ─────────────────────────────
-  logout() {
+  
+  logout(): void {
     localStorage.clear();
     sessionStorage.clear();
     this.router.navigate(['/home']);
+    this.showNotification('Logged out successfully', 'info');
+  }
+  
+  changeTab(tab: string): void {
+    this.selectedTab = tab;
+    // Update URL to reflect tab
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: tab },
+      queryParamsHandling: 'merge'
+    });
   }
 }

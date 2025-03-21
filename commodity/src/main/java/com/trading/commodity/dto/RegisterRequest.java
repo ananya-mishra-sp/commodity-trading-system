@@ -6,7 +6,6 @@ public class RegisterRequest {
     private String email;
     private String password;
 
-    // Getters and Setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 

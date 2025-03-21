@@ -1,16 +1,6 @@
 <div class="reports-container">
   <div class="reports-header">
     <h2>User Reports</h2>
-    <!-- <div>
-      <button mat-raised-button color="accent" (click)="generateNewReport()">
-        <mat-icon>refresh</mat-icon>
-        Generate New Report
-      </button>
-      <button mat-raised-button color="primary" (click)="viewReportHistory()">
-        <mat-icon>history</mat-icon>
-        View Past Reports
-      </button>
-    </div> -->
   </div>
 
   <mat-tab-group class="report-tabs">
@@ -23,56 +13,119 @@
       
       <div class="tab-content">
         <div class="card-header">
+          <div>
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Search Commodity</mat-label>
+              <input matInput (input)="onPortfolioSearch($event)" [value]="portfolioSearchTerm">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <div>
+            <mat-button-toggle-group [(value)]="portfolioViewMode" class="view-toggle">
+              <mat-button-toggle value="table">
+                <mat-icon>table_chart</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle value="grid">
+                <mat-icon>grid_view</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div> 
+          </div>
           <h3>Portfolio Summary</h3>
-          <button mat-raised-button color="primary" (click)="downloadPortfolioReport()">
-            <mat-icon>download</mat-icon>
-            Download CSV
-          </button>
+          <div class="action-buttons">
+            <div> <button mat-raised-button color="primary" (click)="downloadPortfolioReport()">
+              <mat-icon>download</mat-icon>
+              Download CSV
+            </button>
+          </div>
+          </div>
         </div>
         
-        <div class="table-container mat-elevation-z8">
-          <table mat-table [dataSource]="portfolio" matSort class="portfolio-table">
-            <!-- Commodity Column -->
-            <ng-container matColumnDef="commodity">
-              <th mat-header-cell *matHeaderCellDef> Commodity </th>
-              <td mat-cell *matCellDef="let element"> {{ element.commodity.name }} </td>
-            </ng-container>
-            
-            <!-- Quantity Column -->
-            <ng-container matColumnDef="quantity">
-              <th mat-header-cell *matHeaderCellDef > Quantity </th>
-              <td mat-cell *matCellDef="let element"> {{ element.totalQuantity }} </td>
-            </ng-container>
-            
-            <!-- Average Buy Price Column -->
-            <ng-container matColumnDef="avgBuyPrice">
-              <th mat-header-cell *matHeaderCellDef > Avg Buy Price </th>
-              <td mat-cell *matCellDef="let element"> {{ element.avgBuyPrice | currency }} </td>
-            </ng-container>
-            
-            <!-- Current Market Price Column -->
-            <ng-container matColumnDef="currentMarketPrice">
-              <th mat-header-cell *matHeaderCellDef > Current Price </th>
-              <td mat-cell *matCellDef="let element"> {{ element.currentMarketPrice | currency }} </td>
-            </ng-container>
-            
-            <!-- Portfolio Value Column -->
-            <ng-container matColumnDef="portfolioValue">
-              <th mat-header-cell *matHeaderCellDef > Portfolio Value </th>
-              <td mat-cell *matCellDef="let element"> {{ element.portfolioValue | currency }} </td>
-            </ng-container>
-            
-            <!-- Profit/Loss Column -->
-            <ng-container matColumnDef="profitLoss">
-              <th mat-header-cell *matHeaderCellDef > Profit/Loss </th>
-              <td mat-cell *matCellDef="let element" [ngClass]="{'profit': element.profitLoss >= 0, 'loss': element.profitLoss < 0}">
-                {{ element.profitLoss | currency }}
-              </td>
-            </ng-container>
-            
-            <tr mat-header-row *matHeaderRowDef="displayedPortfolioColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedPortfolioColumns;"></tr>
-          </table>
+        <!-- Table View -->
+        <div *ngIf="portfolioViewMode === 'table'" class="table-view">
+          <div class="table-container mat-elevation-z8">
+            <table mat-table [dataSource]="displayedPortfolio" matSort (matSortChange)="sortPortfolioData($event)" class="portfolio-table">
+              <!-- Commodity Column -->
+              <ng-container matColumnDef="commodity">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Commodity </th>
+                <td mat-cell *matCellDef="let element"> {{ element.commodity.name }} </td>
+              </ng-container>
+              
+              <!-- Quantity Column -->
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantity </th>
+                <td mat-cell *matCellDef="let element"> {{ element.totalQuantity }} </td>
+              </ng-container>
+              
+              <!-- Average Buy Price Column -->
+              <ng-container matColumnDef="avgBuyPrice">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Avg Buy Price </th>
+                <td mat-cell *matCellDef="let element"> {{ element.avgBuyPrice | currency }} </td>
+              </ng-container>
+              
+              <!-- Current Market Price Column -->
+              <ng-container matColumnDef="currentMarketPrice">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Current Price </th>
+                <td mat-cell *matCellDef="let element"> {{ element.currentMarketPrice | currency }} </td>
+              </ng-container>
+              
+              <!-- Portfolio Value Column -->
+              <ng-container matColumnDef="portfolioValue">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Portfolio Value </th>
+                <td mat-cell *matCellDef="let element"> {{ element.portfolioValue | currency }} </td>
+              </ng-container>
+              
+              <!-- Profit/Loss Column -->
+              <ng-container matColumnDef="profitLoss">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Profit/Loss </th>
+                <td mat-cell *matCellDef="let element" [ngStyle]="{'color': getProfitLossColor(element.profitLoss)}">
+                  {{ element.profitLoss | currency }} ({{ calculateProfitLossPercentage(element) }})
+                </td>
+              </ng-container>
+              
+              <tr mat-header-row *matHeaderRowDef="displayedPortfolioColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedPortfolioColumns;"></tr>
+            </table>
+          </div>
+          
+          <mat-paginator 
+            [length]="filteredPortfolio.length"
+            [pageSize]="portfolioPageSize"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            (page)="onPortfolioPageChange($event)"
+            showFirstLastButtons
+            aria-label="Select page of portfolio items">
+          </mat-paginator>
+        </div>
+        
+        <!-- Grid View -->
+        <div *ngIf="portfolioViewMode === 'grid'" class="grid-view">
+          <div class="commodity-grid">
+            <mat-card class="commodity-card" *ngFor="let item of displayedPortfolio">
+              <mat-card-header>
+                <mat-card-title>{{ item.commodity.name }}</mat-card-title>
+                <mat-card-subtitle>Quantity: {{ item.totalQuantity }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="grid-item-info">
+                  <p><strong>Avg Buy Price:</strong> {{ item.avgBuyPrice | currency }}</p>
+                  <p><strong>Current Price:</strong> {{ item.currentMarketPrice | currency }}</p>
+                  <p><strong>Portfolio Value:</strong> {{ item.portfolioValue | currency }}</p>
+                  <p [ngStyle]="{'color': getProfitLossColor(item.profitLoss)}">
+                    <strong>Profit/Loss:</strong> {{ item.profitLoss | currency }} ({{ calculateProfitLossPercentage(item) }})
+                  </p>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          
+          <mat-paginator 
+            [length]="filteredPortfolio.length"
+            [pageSize]="portfolioPageSize"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            (page)="onPortfolioPageChange($event)"
+            showFirstLastButtons
+            aria-label="Select page of portfolio items">
+          </mat-paginator>
         </div>
       </div>
     </mat-tab>
@@ -86,42 +139,101 @@
       
       <div class="tab-content">
         <div class="card-header">
+          <div>
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Search Commodity</mat-label>
+              <input matInput (input)="onRiskSearch($event)" [value]="riskSearchTerm">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <div>
+            <mat-button-toggle-group [(value)]="riskViewMode" class="view-toggle">
+              <mat-button-toggle value="table">
+                <mat-icon>table_chart</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle value="grid">
+                <mat-icon>grid_view</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div> 
+          </div>
           <h3>Risk Analysis</h3>
-          <button mat-raised-button color="primary" (click)="downloadRiskReport()">
-            <mat-icon>download</mat-icon>
-            Download CSV
-          </button>
+          <div class="action-buttons">
+            <div> <button mat-raised-button color="primary" (click)="downloadRiskReport()">
+              <mat-icon>download</mat-icon>
+              Download CSV
+            </button>
+          </div>
+          </div>
         </div>
         
-        <div class="table-container mat-elevation-z8">
-          <table mat-table [dataSource]="riskReports" matSort class="risk-table">
-            <!-- Commodity Column -->
-            <ng-container matColumnDef="commodity">
-              <th mat-header-cell *matHeaderCellDef > Commodity </th>
-              <td mat-cell *matCellDef="let element"> {{ element.commodity.name }} </td>
-            </ng-container>
-            
-            <!-- Portfolio Value Column -->
-            <ng-container matColumnDef="portfolioValue">
-              <th mat-header-cell *matHeaderCellDef > Portfolio Value </th>
-              <td mat-cell *matCellDef="let element"> {{ element.portfolioValue | currency }} </td>
-            </ng-container>
-            
-            <!-- Volatility Column -->
-            <ng-container matColumnDef="volatility">
-              <th mat-header-cell *matHeaderCellDef > Volatility </th>
-              <td mat-cell *matCellDef="let element"> {{ element.volatility | percent:'1.2-2' }} </td>
-            </ng-container>
-            
-            <!-- Value at Risk Column -->
-            <ng-container matColumnDef="var95">
-              <th mat-header-cell *matHeaderCellDef > 95% VaR </th>
-              <td mat-cell *matCellDef="let element"> {{ element.var95 | currency }} </td>
-            </ng-container>
-            
-            <tr mat-header-row *matHeaderRowDef="displayedRiskColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedRiskColumns;"></tr>
-          </table>
+        <!-- Table View -->
+        <div *ngIf="riskViewMode === 'table'" class="table-view">
+          <div class="table-container mat-elevation-z8">
+            <table mat-table [dataSource]="displayedRiskReports" matSort (matSortChange)="sortRiskData($event)" class="risk-table">
+              <!-- Commodity Column -->
+              <ng-container matColumnDef="commodity">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Commodity </th>
+                <td mat-cell *matCellDef="let element"> {{ element.commodity.name }} </td>
+              </ng-container>
+              
+              <!-- Portfolio Value Column -->
+              <ng-container matColumnDef="portfolioValue">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Portfolio Value </th>
+                <td mat-cell *matCellDef="let element"> {{ element.portfolioValue | currency }} </td>
+              </ng-container>
+              
+              <!-- Volatility Column -->
+              <ng-container matColumnDef="volatility">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Volatility </th>
+                <td mat-cell *matCellDef="let element"> {{ element.volatility | percent:'1.2-2' }} </td>
+              </ng-container>
+              
+              <!-- Value at Risk Column -->
+              <ng-container matColumnDef="var95">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> 95% VaR </th>
+                <td mat-cell *matCellDef="let element"> {{ element.var95 | currency }} </td>
+              </ng-container>
+              
+              <tr mat-header-row *matHeaderRowDef="displayedRiskColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedRiskColumns;"></tr>
+            </table>
+          </div>
+          
+          <mat-paginator 
+            [length]="filteredRiskReports.length"
+            [pageSize]="riskPageSize"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            (page)="onRiskPageChange($event)"
+            showFirstLastButtons
+            aria-label="Select page of risk items">
+          </mat-paginator>
+        </div>
+        
+        <!-- Grid View -->
+        <div *ngIf="riskViewMode === 'grid'" class="grid-view">
+          <div class="commodity-grid">
+            <mat-card class="commodity-card" *ngFor="let item of displayedRiskReports">
+              <mat-card-header>
+                <mat-card-title>{{ item.commodity.name }}</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="grid-item-info">
+                  <p><strong>Portfolio Value:</strong> {{ item.portfolioValue | currency }}</p>
+                  <p><strong>Volatility:</strong> {{ item.volatility | percent:'1.2-2' }}</p>
+                  <p><strong>95% Value at Risk:</strong> {{ item.var95 | currency }}</p>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          
+          <mat-paginator 
+            [length]="filteredRiskReports.length"
+            [pageSize]="riskPageSize"
+            [pageSizeOptions]="[5, 10, 25, 50]"
+            (page)="onRiskPageChange($event)"
+            showFirstLastButtons
+            aria-label="Select page of risk items">
+          </mat-paginator>
         </div>
       </div>
     </mat-tab>

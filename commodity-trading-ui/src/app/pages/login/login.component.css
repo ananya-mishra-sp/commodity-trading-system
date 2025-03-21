@@ -1,39 +1,291 @@
+/* Login Container Styling */
+/* .login-wrapper {
+  width: 100%;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  background-color: var(--light-bg);
+} */
+
 .login-container {
+  /* background-color: var(--card-bg); */
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 450px;
+  padding: 2rem;
+  border: 1px solid rgba(203, 213, 225, 0.3);
+  position: relative;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-header h2 {
+  color: var(--secondary-color);
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.login-subheading {
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+/* Form Styling */
+.login-form {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.form-icon {
+  color: var(--text-light);
+  margin-right: 0.5rem;
+}
+
+/* Remember Me */
+.remember-me {
+  margin: 0.25rem 0 1rem;
+}
+
+.remember-me .mat-checkbox {
+  color: var(--text-color);
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.submit-button {
+  height: 44px;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  position: relative;
+  transition: var(--transition);
+  color: white !important;
+  background-color: var(--primary-color) !important;
+}
+
+.submit-button:hover:not([disabled]) {
+  background-color: var(--primary-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 100, 235, 0.2);
+}
+
+.cancel-button {
+  height: 44px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--text-light) !important;
+  color: var(--text-color) !important;
+  transition: var(--transition);
+}
+
+.cancel-button:hover {
+  background-color: rgba(100, 116, 139, 0.08) !important;
+  transform: translateY(-2px);
+}
+
+/* Loading State */
+.submit-button.loading {
+  color: transparent;
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Alert Styling */
+.alert-container {
+  display: flex;
   align-items: center;
-  padding: 20px;
-  background: #f9f9f9; /* Dark background to match the theme */
-  color: rgb(0, 0, 0);
-  border-radius: 10px;
-  width: 350px; /* Controlled width */
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.3s ease;
 }
 
-h2 {
-  margin-bottom: 20px;
-  font-size: 22px;
+.success-alert {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
 }
 
-form {
+.error-alert {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+}
+
+.alert-icon {
+  margin-right: 0.75rem;
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
-.full-width {
-  width: 100%;
+.alert-icon .icon {
+  width: 22px;
+  height: 22px;
 }
 
-.login-button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
+.alert-message {
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
-.success-snackbar {
-  background-color: #4CAF50;
-  color: white;
-  font-weight: bold;
+/* Footer */
+.login-footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
 }
 
+.register-link {
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.register-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* Shake Animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Override Material Styles */
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(203, 213, 225, 0.5) !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: var(--primary-color) !important;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.75em 0 !important;
+}
+
+::ng-deep .mat-form-field-label-wrapper {
+  top: -1em !important;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: var(--primary-color) !important;
+}
+
+::ng-deep .mat-checkbox-checked .mat-checkbox-background {
+  background-color: var(--primary-color) !important;
+}
+
+::ng-deep .mat-input-element {
+  caret-color: var(--primary-color) !important;
+}
+
+::ng-deep .mat-select-arrow {
+  color: var(--text-light) !important;
+}
+
+::ng-deep .mat-select-panel {
+  background-color: var(--card-bg) !important;
+  border-radius: var(--border-radius) !important;
+}
+
+::ng-deep .mat-select-panel .mat-option.mat-selected:not(.mat-option-multiple) {
+  background-color: rgba(37, 100, 235, 0.1) !important;
+  color: var(--primary-color) !important;
+}
+
+::ng-deep .mat-option:hover:not(.mat-option-disabled) {
+  background-color: rgba(203, 213, 225, 0.2) !important;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 1.5rem;
+    margin: 1rem auto;
+  }
+  
+  .login-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Dialog styling */
+::ng-deep .auth-dialog .mat-dialog-container {
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+.form-icon {
+  color: rgb(103, 118, 203);
+  margin-right: 0.5rem;
+}
+
+/* Custom scroll for container */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(203, 213, 225, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-color);
+}

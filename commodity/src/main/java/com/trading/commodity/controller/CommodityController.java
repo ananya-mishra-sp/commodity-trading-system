@@ -42,18 +42,15 @@ public class CommodityController {
         return ResponseEntity.ok(commodityService.createCommodity(commodity));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Commodity> updateCommodity(@PathVariable Integer id, @RequestBody Commodity commodityDetails) {
-        return ResponseEntity.ok(commodityService.updateCommodity(id, commodityDetails));
-    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCommodity(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, String>> deleteCommodity(@PathVariable Integer id) {
         commodityService.deleteCommodity(id);
-        return ResponseEntity.ok("Commodity deleted successfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Commodity deleted successfully!");
+        return ResponseEntity.ok(response);
     }
 
-    // Upload CSV (No external dependency)
+    // Upload CSV - Update Commodities or Create new if new data found
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadCommodities(@RequestParam("file") MultipartFile file) {
         try {
