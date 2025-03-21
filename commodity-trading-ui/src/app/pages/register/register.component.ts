@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,10 +10,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoginComponent } from '../login/login.component';
-import { of, timer } from 'rxjs';
-import { debounceTime, switchMap, distinctUntilChanged, finalize } from 'rxjs/operators';
+import { timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -34,7 +33,7 @@ import { UserService } from '../../services/user.service';
     MatProgressSpinnerModule
   ],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   errorMessage: string = '';
   usernameExists: boolean = false;
@@ -47,11 +46,11 @@ export class RegisterComponent {
   registrationSuccess: boolean = false;
   passwordStrength: number = 0;
   usersList: any[] = []; 
+  apiUrl: string = 'http://localhost:8080/api';
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private userService: UserService,
+    private http: HttpClient,
     private dialogRef: MatDialogRef<RegisterComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -71,20 +70,9 @@ export class RegisterComponent {
     }, { 
       validators: this.passwordMatchValidator 
     });
-
-    // Get users list for validation
-    this.userService.getAllUsers().subscribe({
-      next: (users) => {
-        this.usersList = users;
-      },
-      error: (error) => {
-        this.snackBar.open('Failed to load user data. Some validation features might not work correctly.', 'Close', {
-          duration: 5000,
-          panelClass: 'error-snackbar'
-        });
-      }
-    });
-
+   
+    
+    
     // Monitor password changes to calculate strength
     this.registerForm.get('password')?.valueChanges.pipe(
       debounceTime(300)
@@ -103,7 +91,10 @@ export class RegisterComponent {
     ).subscribe(username => {
       if (username && username.length >= 3) {
         this.checkingUsername = true;
-        this.checkUsernameExists(username);
+        // Use the existing user list to check for duplicates
+        this.usernameExists = this.usersList.some(user => 
+          user.username?.toLowerCase() === username.toLowerCase());
+        this.checkingUsername = false;
       }
     });
 
@@ -114,7 +105,25 @@ export class RegisterComponent {
     ).subscribe(email => {
       if (email && this.isValidEmail(email)) {
         this.checkingEmail = true;
-        this.checkEmailExists(email);
+        // Use the existing user list to check for duplicates
+        this.emailExists = this.usersList.some(user => 
+          user.email?.toLowerCase() === email.toLowerCase());
+        this.checkingEmail = false;
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    // Fetch all users once at component initialization
+    this.http.get<any[]>(this.apiUrl + "/users").subscribe({
+      next: (users) => {
+        this.usersList = users;
+      },
+      error: (error) => {
+        this.snackBar.open('Failed to load user data. Some validation features might not work correctly.', 'Close', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        });
       }
     });
   }
@@ -185,54 +194,6 @@ export class RegisterComponent {
     }
   }
 
-  checkUsernameExists(username: string) {
-    // First check local cache
-    if (this.usersList.length > 0) {
-      this.usernameExists = this.usersList.some(user => user.username === username);
-      this.checkingUsername = false;
-      return;
-    }
-    
-    // If no local cache, check with service
-    this.authService.checkUsername(username).subscribe({
-      next: exists => {
-        this.usernameExists = exists;
-        this.checkingUsername = false;
-      },
-      error: () => {
-        this.snackBar.open('Failed to verify username availability', 'Close', {
-          duration: 3000,
-          panelClass: 'error-snackbar'
-        });
-        this.checkingUsername = false;
-      }
-    });
-  }
-
-  checkEmailExists(email: string) {
-    // First check local cache
-    if (this.usersList.length > 0) {
-      this.emailExists = this.usersList.some(user => user.email === email);
-      this.checkingEmail = false;
-      return;
-    }
-    
-    // If no local cache, check with service
-    this.authService.checkEmail(email).subscribe({
-      next: exists => {
-        this.emailExists = exists;
-        this.checkingEmail = false;
-      },
-      error: () => {
-        this.snackBar.open('Failed to verify email availability', 'Close', {
-          duration: 3000,
-          panelClass: 'error-snackbar'
-        });
-        this.checkingEmail = false;
-      }
-    });
-  }
-
   openLoginDialog(event?: Event) {
     if (event) {
       event.preventDefault();
@@ -294,8 +255,8 @@ export class RegisterComponent {
     this.formSubmitting = true;
     this.errorMessage = '';
 
-    // Register user
-    this.authService.register(userData).pipe(
+    // Register user by making a POST request to the same API endpoint
+    this.http.post(this.apiUrl + "/auth/register", userData).pipe(
       finalize(() => {
         // Use timer to simulate network delay (remove in production)
         timer(1500).subscribe(() => {
@@ -311,7 +272,7 @@ export class RegisterComponent {
         });
       },
       error: (error) => {
-        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        this.errorMessage = 'Registration failed. Please try again.';
         this.formSubmitting = false;
       }
     });
