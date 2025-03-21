@@ -39,28 +39,31 @@
       <mat-label>Full Name</mat-label>
       <input matInput formControlName="fullName" type="text" required />
       <mat-icon matPrefix class="form-icon">person</mat-icon>
-      <mat-error *ngIf="registerForm.get('fullName')?.invalid">Full name is required</mat-error>
+      <mat-error *ngIf="registerForm.get('fullName')?.invalid">Full name is required (min 3 characters)</mat-error>
     </mat-form-field>
     
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Username</mat-label>
-      <input matInput formControlName="username" type="text" required (blur)="checkUsernameExists()" />
+      <input matInput formControlName="username" type="text" required />
       <mat-icon matPrefix class="form-icon">account_circle</mat-icon>
       <mat-spinner matSuffix diameter="20" *ngIf="checkingUsername"></mat-spinner>
       <mat-icon matSuffix *ngIf="usernameExists && !checkingUsername" class="error-icon">error_outline</mat-icon>
       <mat-icon matSuffix *ngIf="registerForm.get('username')?.valid && !usernameExists && !checkingUsername && registerForm.get('username')?.value" class="success-icon">check_circle</mat-icon>
-      <mat-error *ngIf="registerForm.get('username')?.invalid && !usernameExists">Username is required</mat-error>
+      <mat-error *ngIf="registerForm.get('username')?.hasError('required')">Username is required</mat-error>
+      <mat-error *ngIf="registerForm.get('username')?.hasError('minlength')">Username must be at least 3 characters</mat-error>
+      <mat-error *ngIf="registerForm.get('username')?.hasError('pattern')">Username can only contain letters, numbers, underscores and hyphens</mat-error>
       <mat-error *ngIf="usernameExists">Username already exists</mat-error>
     </mat-form-field>
     
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Email</mat-label>
-      <input matInput formControlName="email" type="email" required (blur)="checkEmailExists()" />
+      <input matInput formControlName="email" type="email" required />
       <mat-icon matPrefix class="form-icon">email</mat-icon>
       <mat-spinner matSuffix diameter="20" *ngIf="checkingEmail"></mat-spinner>
       <mat-icon matSuffix *ngIf="emailExists && !checkingEmail" class="error-icon">error_outline</mat-icon>
       <mat-icon matSuffix *ngIf="registerForm.get('email')?.valid && !emailExists && !checkingEmail && registerForm.get('email')?.value" class="success-icon">check_circle</mat-icon>
-      <mat-error *ngIf="registerForm.get('email')?.invalid && !emailExists">Invalid email address</mat-error>
+      <mat-error *ngIf="registerForm.get('email')?.hasError('required')">Email address is required</mat-error>
+      <mat-error *ngIf="registerForm.get('email')?.hasError('email')">Invalid email address format</mat-error>
       <mat-error *ngIf="emailExists">Email is already in use</mat-error>
     </mat-form-field>
     
@@ -70,11 +73,9 @@
         <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
         <mat-icon matPrefix class="form-icon">lock</mat-icon>
         <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-          <!-- <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon> -->
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
-        <mat-error *ngIf="registerForm.get('password')?.errors?.['minlength']">
-          Password must be at least 6 characters long
-        </mat-error>
+        <mat-error>{{ getPasswordErrorMessage() }}</mat-error>
       </mat-form-field>
       
       <mat-form-field appearance="outline" class="form-field">
@@ -82,9 +83,10 @@
         <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword" required />
         <mat-icon matPrefix class="form-icon">lock</mat-icon>
         <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
-          <!-- <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon> -->
+          <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
-        <mat-error *ngIf="registerForm.get('confirmPassword')?.invalid">Confirm Password is required</mat-error>
+        <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('required')">Confirm Password is required</mat-error>
+        <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('passwordMismatch')">Passwords do not match</mat-error>
       </mat-form-field>
     </div>
     
@@ -99,9 +101,18 @@
       <div class="strength-text" [ngClass]="getPasswordStrengthClass()">{{ getPasswordStrengthText() }}</div>
     </div>
     
-    <button mat-raised-button color="primary" class="register-button" type="submit" [disabled]="registerForm.invalid || formSubmitting">
+    <div class="terms-checkbox">
+      <mat-checkbox formControlName="agreeTerms" color="primary">
+        I agree to the <a href="#" class="terms-link">Terms and Conditions</a>
+      </mat-checkbox>
+      <mat-error *ngIf="registerForm.get('agreeTerms')?.invalid && registerForm.get('agreeTerms')?.touched">
+        You must agree to the terms and conditions
+      </mat-error>
+    </div>
+    
+    <button mat-raised-button color="primary" class="register-button" type="submit" [disabled]="formSubmitting">
       <span *ngIf="!formSubmitting">Create Account</span>
-      <span *ngIf="formSubmitting" class="spinner"></span>
+      <mat-spinner *ngIf="formSubmitting" diameter="24" class="button-spinner"></mat-spinner>
     </button>
   </form>
   

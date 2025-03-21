@@ -14,6 +14,7 @@ import { LoginComponent } from '../login/login.component';
 import { of, timer } from 'rxjs';
 import { debounceTime, switchMap, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -45,10 +46,12 @@ export class RegisterComponent {
   formSubmitting: boolean = false;
   registrationSuccess: boolean = false;
   passwordStrength: number = 0;
+  usersList: any[] = []; 
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private userService: UserService,
     private dialogRef: MatDialogRef<RegisterComponent>,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -60,13 +63,26 @@ export class RegisterComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required, 
-        Validators.minLength(6),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
       ]],
       confirmPassword: ['', Validators.required],
       agreeTerms: [false, Validators.requiredTrue]
     }, { 
       validators: this.passwordMatchValidator 
+    });
+
+    // Get users list for validation
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        this.usersList = users;
+      },
+      error: (error) => {
+        this.snackBar.open('Failed to load user data. Some validation features might not work correctly.', 'Close', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        });
+      }
     });
 
     // Monitor password changes to calculate strength
@@ -82,34 +98,29 @@ export class RegisterComponent {
 
     // Setup username check with debounce
     this.registerForm.get('username')?.valueChanges.pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
-      switchMap(username => {
-        if (!username || username.length < 3) return of(false);
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(username => {
+      if (username && username.length >= 3) {
         this.checkingUsername = true;
-        return this.authService.checkUsername(username);
-      })
-    ).subscribe(exists => {
-      this.usernameExists = exists;
-      this.checkingUsername = false;
+        this.checkUsernameExists(username);
+      }
     });
 
     // Setup email check with debounce
     this.registerForm.get('email')?.valueChanges.pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
-      switchMap(email => {
-        if (!email || !this.isValidEmail(email)) return of(false);
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(email => {
+      if (email && this.isValidEmail(email)) {
         this.checkingEmail = true;
-        return this.authService.checkEmail(email);
-      })
-    ).subscribe(exists => {
-      this.emailExists = exists;
-      this.checkingEmail = false;
+        this.checkEmailExists(email);
+      }
     });
   }
 
-  passwordMatchValidator(form: FormGroup) {
+  // Static password match validator
+  static passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
     
@@ -119,6 +130,11 @@ export class RegisterComponent {
     }
     
     return null;
+  }
+
+  // We need to use a reference to the static method
+  passwordMatchValidator(form: FormGroup) {
+    return RegisterComponent.passwordMatchValidator(form);
   }
 
   isValidEmail(email: string): boolean {
@@ -169,44 +185,52 @@ export class RegisterComponent {
     }
   }
 
-  checkUsernameExists() {
-    const username = this.registerForm.get('username')?.value;
-    if (username && username.length >= 3) {
-      this.checkingUsername = true;
-      this.authService.checkUsername(username).subscribe({
-        next: exists => {
-          this.usernameExists = exists;
-          this.checkingUsername = false;
-        },
-        error: () => {
-          this.snackBar.open('Failed to verify username availability', 'Close', {
-            duration: 3000,
-            panelClass: 'error-snackbar'
-          });
-          this.checkingUsername = false;
-        }
-      });
+  checkUsernameExists(username: string) {
+    // First check local cache
+    if (this.usersList.length > 0) {
+      this.usernameExists = this.usersList.some(user => user.username === username);
+      this.checkingUsername = false;
+      return;
     }
+    
+    // If no local cache, check with service
+    this.authService.checkUsername(username).subscribe({
+      next: exists => {
+        this.usernameExists = exists;
+        this.checkingUsername = false;
+      },
+      error: () => {
+        this.snackBar.open('Failed to verify username availability', 'Close', {
+          duration: 3000,
+          panelClass: 'error-snackbar'
+        });
+        this.checkingUsername = false;
+      }
+    });
   }
 
-  checkEmailExists() {
-    const email = this.registerForm.get('email')?.value;
-    if (email && this.isValidEmail(email)) {
-      this.checkingEmail = true;
-      this.authService.checkEmail(email).subscribe({
-        next: exists => {
-          this.emailExists = exists;
-          this.checkingEmail = false;
-        },
-        error: () => {
-          this.snackBar.open('Failed to verify email availability', 'Close', {
-            duration: 3000,
-            panelClass: 'error-snackbar'
-          });
-          this.checkingEmail = false;
-        }
-      });
+  checkEmailExists(email: string) {
+    // First check local cache
+    if (this.usersList.length > 0) {
+      this.emailExists = this.usersList.some(user => user.email === email);
+      this.checkingEmail = false;
+      return;
     }
+    
+    // If no local cache, check with service
+    this.authService.checkEmail(email).subscribe({
+      next: exists => {
+        this.emailExists = exists;
+        this.checkingEmail = false;
+      },
+      error: () => {
+        this.snackBar.open('Failed to verify email availability', 'Close', {
+          duration: 3000,
+          panelClass: 'error-snackbar'
+        });
+        this.checkingEmail = false;
+      }
+    });
   }
 
   openLoginDialog(event?: Event) {
@@ -220,61 +244,76 @@ export class RegisterComponent {
     });
   }
 
+  getPasswordErrorMessage(): string {
+    const passwordControl = this.registerForm.get('password');
+    if (passwordControl?.hasError('required')) {
+      return 'Password is required';
+    }
+    if (passwordControl?.hasError('minlength')) {
+      return 'Password must be at least 8 characters';
+    }
+    if (passwordControl?.hasError('pattern')) {
+      return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+    }
+    return '';
+  }
+
   register() {
-    if (this.registerForm.valid) {
-      if (this.registerForm.value.password !== this.registerForm.value.confirmPassword) {
-        this.errorMessage = 'Passwords do not match';
-        return;
-      }
-
-      if (this.usernameExists || this.emailExists) {
-        this.errorMessage = 'Username or email already exists';
-        return;
-      }
-
-      const userData = {
-        name: this.registerForm.value.fullName,
-        username: this.registerForm.value.username,
-        email: this.registerForm.value.email,
-        password: this.registerForm.value.password,
-      };
-      
-      this.formSubmitting = true;
-      this.errorMessage = '';
-
-      // Register user
-      this.authService.register(userData).pipe(
-        finalize(() => {
-          // Use timer to simulate network delay (remove in production)
-          timer(1500).subscribe(() => {
-            this.formSubmitting = false;
-          });
-        })
-      ).subscribe({
-        next: (response) => {
-          this.registrationSuccess = true;
-          this.snackBar.open('Registration successful! You can now login.', 'Close', {
-            duration: 5000,
-            panelClass: 'success-snackbar',
-          });
-          
-          // Optionally redirect to login after a delay
-          // timer(3000).subscribe(() => {
-          //   this.dialogRef.close(true);
-          //   this.router.navigate(['/login']);
-          // });
-        },
-        error: (error) => {
-          this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
-          this.formSubmitting = false;
-        }
-      });
-    } else {
+    if (this.registerForm.invalid) {
       // Mark all form controls as touched to trigger validation messages
       Object.keys(this.registerForm.controls).forEach(key => {
         const control = this.registerForm.get(key);
         control?.markAsTouched();
       });
+      
+      // Show error for terms and conditions if that's the issue
+      if (this.registerForm.get('agreeTerms')?.invalid) {
+        this.errorMessage = 'You must agree to the terms and conditions';
+      }
+      
+      return;
     }
+
+    if (this.registerForm.value.password !== this.registerForm.value.confirmPassword) {
+      this.errorMessage = 'Passwords do not match';
+      return;
+    }
+
+    if (this.usernameExists || this.emailExists) {
+      this.errorMessage = this.usernameExists ? 'Username already exists' : 'Email already exists';
+      return;
+    }
+
+    const userData = {
+      name: this.registerForm.value.fullName,
+      username: this.registerForm.value.username,
+      email: this.registerForm.value.email,
+      password: this.registerForm.value.password,
+    };
+    
+    this.formSubmitting = true;
+    this.errorMessage = '';
+
+    // Register user
+    this.authService.register(userData).pipe(
+      finalize(() => {
+        // Use timer to simulate network delay (remove in production)
+        timer(1500).subscribe(() => {
+          this.formSubmitting = false;
+        });
+      })
+    ).subscribe({
+      next: (response) => {
+        this.registrationSuccess = true;
+        this.snackBar.open('Registration successful! You can now login.', 'Close', {
+          duration: 5000,
+          panelClass: 'success-snackbar',
+        });
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+        this.formSubmitting = false;
+      }
+    });
   }
 }

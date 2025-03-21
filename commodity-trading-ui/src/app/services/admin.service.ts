@@ -27,7 +27,7 @@ export class AdminService {
 
   // 📌 Delete a commodity
   deleteCommodity(id: number) {
-    return this.http.delete(`${this.apiUrl}/commodities/id`, { responseType: 'text' });
+    return this.http.delete(`${this.apiUrl}/commodities/${id}`, { responseType: 'text' });
   }  
   
   // Fetch users

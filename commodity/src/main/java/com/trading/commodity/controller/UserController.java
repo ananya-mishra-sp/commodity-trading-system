@@ -39,7 +39,7 @@ public class UserController {
     //
     //    }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
         Map<String, String> response = new HashMap<>();
