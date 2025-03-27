@@ -16,7 +16,7 @@ import { RouterOutlet } from '@angular/router';
   styleUrls: ['./user-dashboard.component.css'],
   imports: [CommonModule, NavbarComponent, MatButtonModule, MatSelectModule, MatSnackBarModule, RouterOutlet]
 })
-export class UserDashboardComponent implements OnInit {
+export class UserDashboardComponent {
   commoditiesList: any[] = [];
   selectedSort: string = 'name-asc';
 

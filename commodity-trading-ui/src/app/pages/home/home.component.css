@@ -106,9 +106,9 @@ body {
 }
 
 .dive-in-btn {
-  background-color: transparent !important;
-  color: white !important;
-  border: 2px solid white !important;
+  background-color: rgba(182, 189, 229, 0.703) !important;
+  color: rgb(3, 5, 53) !important;
+  border: transparent !important;
 }
 
 /* Main Content */

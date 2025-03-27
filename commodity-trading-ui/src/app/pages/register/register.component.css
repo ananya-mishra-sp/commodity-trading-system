@@ -223,3 +223,14 @@
   gap: 40px;
 }
 
+.register-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 80vh; /* Limit height to 80% of viewport height */
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds height */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}

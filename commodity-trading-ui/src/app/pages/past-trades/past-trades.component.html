@@ -22,14 +22,14 @@
           <div class="date-range-filters">
             <mat-form-field appearance="outline">
               <mat-label>From Date </mat-label>
-              <input placeholder="mm/dd/yy" matInput [matDatepicker]="pickerFrom" formControlName="dateFrom">
+              <input placeholder="MM/DD/YYYY" matInput [matDatepicker]="pickerFrom" formControlName="dateFrom">
               <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
               <mat-datepicker #pickerFrom></mat-datepicker>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>To Date</mat-label>
-              <input placeholder="mm/dd/yy" matInput [matDatepicker]="pickerTo" formControlName="dateTo">
+              <input placeholder="MM/DD/YYYY" matInput [matDatepicker]="pickerTo" formControlName="dateTo">
               <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
               <mat-datepicker #pickerTo></mat-datepicker>
             </mat-form-field>

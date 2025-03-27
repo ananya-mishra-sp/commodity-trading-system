@@ -10,7 +10,7 @@
       <div class="commodity-info">
         <div class="price-info">
           <span class="price-label">Current Price:</span>
-          <span class="price-value">₹{{ data.commodity.currentPrice | number: '1.2-2' }}</span>
+          <span class="price-value">${{ data.commodity.currentPrice | number: '1.2-2' }}</span>
         </div>
         <div class="unit-info">
           <span class="unit-label">Unit:</span>
@@ -51,7 +51,7 @@
     <div class="total-price-container">
       <div class="total-price-box">
         <div class="total-price-label">Total Price:</div>
-        <div class="total-price-value">₹{{ totalPrice | number: '1.2-2' }}</div>
+        <div class="total-price-value">${{ totalPrice | number: '1.2-2' }}</div>
       </div>
     </div>
     

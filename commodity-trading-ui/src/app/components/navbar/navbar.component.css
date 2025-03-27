@@ -34,7 +34,7 @@
 
 .nav-btn:hover {
   background-color: rgba(144, 174, 231, 0.2);
-  border-color: rgba(75, 79, 199, 0.6);
+  border-color: transparent;
 }
 
 .logout-btn {
@@ -76,3 +76,14 @@
   }
 }
 
+.logout-btn {
+  background-color: rgba(144, 174, 231, 0.2);
+  border-color: rgba(75, 79, 199, 0.6);
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.logout-btn:hover {
+  background-color: rgba(65, 102, 195, 0.4);
+  border-color: rgb(107, 112, 200);
+}

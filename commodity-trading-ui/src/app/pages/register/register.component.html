@@ -73,7 +73,7 @@
         <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
         <mat-icon matPrefix class="form-icon">lock</mat-icon>
         <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          <!-- <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon> -->
         </button>
         <mat-error>{{ getPasswordErrorMessage() }}</mat-error>
       </mat-form-field>
@@ -83,7 +83,7 @@
         <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword" required />
         <mat-icon matPrefix class="form-icon">lock</mat-icon>
         <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
-          <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          <!-- <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon> -->
         </button>
         <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('required')">Confirm Password is required</mat-error>
         <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('passwordMismatch')">Passwords do not match</mat-error>
@@ -103,7 +103,7 @@
     
     <div class="terms-checkbox">
       <mat-checkbox formControlName="agreeTerms" color="primary">
-        I agree to the <a href="#" class="terms-link">Terms and Conditions</a>
+        I agree to the Terms and Conditions.
       </mat-checkbox>
       <!-- <mat-error *ngIf="registerForm.get('agreeTerms')?.invalid && registerForm.get('agreeTerms')?.touched">
         You must agree to the terms and conditions

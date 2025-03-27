@@ -70,7 +70,6 @@ export class RegisterComponent implements OnInit {
     }, { 
       validators: this.passwordMatchValidator 
     });
-   
     
     
     // Monitor password changes to calculate strength
